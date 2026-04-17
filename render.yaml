@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: FlyOriginals
+    name: game-hub
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist

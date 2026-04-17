@@ -16,106 +16,95 @@ export default function AuthModal({ initialTab = 'login', onClose }) {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
     if (error) setError(error.message)
-    else { setSuccess('Willkommen zurück! 🥚'); setTimeout(onClose, 1000) }
+    else { setSuccess('Willkommen zurück!'); setTimeout(onClose, 900) }
   }
 
   async function handleRegister(e) {
     e.preventDefault()
     setLoading(true); setError(''); setSuccess('')
     if (username.length < 3) { setError('Username mind. 3 Zeichen.'); setLoading(false); return }
-    // Check username availability
     const { data: existing } = await supabase.from('profiles').select('id').eq('username', username).single()
     if (existing) { setError('Username bereits vergeben.'); setLoading(false); return }
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { username } }
-    })
+    const { error } = await supabase.auth.signUp({ email, password, options: { data: { username } } })
     setLoading(false)
     if (error) setError(error.message)
-    else { setSuccess('Account erstellt! Willkommen 🎉'); setTimeout(onClose, 1500) }
+    else { setSuccess('Account erstellt!'); setTimeout(onClose, 1200) }
+  }
+
+  const inp = {
+    padding: '11px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)',
+    color: 'var(--white)', fontFamily: 'var(--ff-body)', fontSize: '0.88rem', outline: 'none',
+    width: '100%', transition: 'border-color 0.2s',
   }
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal-box">
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <div style={{ fontFamily: 'Fredoka One, cursive', fontSize: '1.3rem', color: 'var(--brown-d)' }}>
-            🥚 GameHub Konto
+    <div onClick={e => e.target === e.currentTarget && onClose()} style={{
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000,
+      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
+    }}>
+      <div style={{
+        background: 'var(--crimson-mid)', border: '1px solid var(--border)',
+        padding: '36px 32px', width: '100%', maxWidth: 400,
+        animation: 'slideUp 0.25s ease',
+      }}>
+        <style>{`@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}`}</style>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
+          <div>
+            <div style={{ fontFamily: 'var(--ff-display)', fontSize: '1.6rem', fontWeight: 300, color: 'var(--white)' }}>
+              {tab === 'login' ? 'Willkommen zurück' : 'Account erstellen'}
+            </div>
+            <div style={{ fontFamily: 'var(--ff-label)', fontSize: '0.65rem', letterSpacing: '0.2em', color: 'var(--gold)', marginTop: 4, textTransform: 'uppercase' }}>
+              FlyOriginals
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: 'var(--text-l)' }}
-          >✕</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--white-dim)', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>✕</button>
         </div>
 
-        {/* Tabs */}
-        <div style={{ display: 'flex', borderBottom: '2px solid var(--border)', marginBottom: 20 }}>
-          {['login','register'].map(t => (
-            <button
-              key={t}
-              onClick={() => { setTab(t); setError(''); setSuccess('') }}
-              style={{
-                flex: 1, padding: '8px', background: 'none', border: 'none',
-                borderBottom: tab === t ? '3px solid var(--yolk-d)' : '3px solid transparent',
-                marginBottom: '-2px',
-                fontFamily: 'Fredoka One, cursive',
-                fontSize: '0.9rem',
-                color: tab === t ? 'var(--brown-d)' : 'var(--text-l)',
-                cursor: 'pointer',
-              }}
-            >
-              {t === 'login' ? '🔑 Login' : '✨ Registrieren'}
+        <div style={{ display: 'flex', gap: 0, marginBottom: 28, borderBottom: '1px solid var(--border)' }}>
+          {['login', 'register'].map(t => (
+            <button key={t} onClick={() => { setTab(t); setError(''); setSuccess('') }} style={{
+              flex: 1, padding: '8px 0', background: 'none', border: 'none',
+              borderBottom: tab === t ? '2px solid var(--gold)' : '2px solid transparent',
+              marginBottom: -1, fontFamily: 'var(--ff-label)', fontSize: '0.7rem',
+              letterSpacing: '0.2em', textTransform: 'uppercase',
+              color: tab === t ? 'var(--gold)' : 'var(--white-dim)', cursor: 'pointer', transition: 'color 0.2s',
+            }}>
+              {t === 'login' ? 'Login' : 'Registrieren'}
             </button>
           ))}
         </div>
 
-        {/* Login Form */}
-        {tab === 'login' && (
-          <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <label className="form-label">E-Mail</label>
-              <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="deine@email.de" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Passwort</label>
-              <input className="form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" />
-            </div>
-            {error && <div className="form-error">⚠️ {error}</div>}
-            {success && <div style={{ color: 'var(--green)', fontWeight: 700, fontSize: '0.85rem', marginBottom: 8 }}>✅ {success}</div>}
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
-              {loading ? 'Lädt…' : '🔑 Einloggen'}
+        {tab === 'login' ? (
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <input style={inp} type="email" placeholder="E-Mail" value={email} onChange={e => setEmail(e.target.value)} required
+              onFocus={e => e.target.style.borderColor = 'var(--gold)'} onBlur={e => e.target.style.borderColor = 'var(--border)'} />
+            <input style={inp} type="password" placeholder="Passwort" value={password} onChange={e => setPassword(e.target.value)} required
+              onFocus={e => e.target.style.borderColor = 'var(--gold)'} onBlur={e => e.target.style.borderColor = 'var(--border)'} />
+            {error && <div style={{ color: '#FF6060', fontSize: '0.75rem', fontFamily: 'var(--ff-label)' }}>⚠ {error}</div>}
+            {success && <div style={{ color: var_gold_safe(), fontSize: '0.75rem', fontFamily: 'var(--ff-label)' }}>✓ {success}</div>}
+            <button type="submit" className="btn-cta btn-cta-solid" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 6 }}>
+              {loading ? 'Lädt…' : 'Einloggen'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <input style={inp} type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required minLength={3} maxLength={20}
+              onFocus={e => e.target.style.borderColor = 'var(--gold)'} onBlur={e => e.target.style.borderColor = 'var(--border)'} />
+            <input style={inp} type="email" placeholder="E-Mail" value={email} onChange={e => setEmail(e.target.value)} required
+              onFocus={e => e.target.style.borderColor = 'var(--gold)'} onBlur={e => e.target.style.borderColor = 'var(--border)'} />
+            <input style={inp} type="password" placeholder="Passwort (mind. 6 Zeichen)" value={password} onChange={e => setPassword(e.target.value)} required minLength={6}
+              onFocus={e => e.target.style.borderColor = 'var(--gold)'} onBlur={e => e.target.style.borderColor = 'var(--border)'} />
+            {error && <div style={{ color: '#FF6060', fontSize: '0.75rem', fontFamily: 'var(--ff-label)' }}>⚠ {error}</div>}
+            {success && <div style={{ color: '#70D870', fontSize: '0.75rem', fontFamily: 'var(--ff-label)' }}>✓ {success}</div>}
+            <button type="submit" className="btn-cta btn-cta-solid" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 6 }}>
+              {loading ? 'Lädt…' : 'Account erstellen'}
             </button>
           </form>
         )}
-
-        {/* Register Form */}
-        {tab === 'register' && (
-          <form onSubmit={handleRegister}>
-            <div className="form-group">
-              <label className="form-label">Username</label>
-              <input className="form-input" type="text" value={username} onChange={e => setUsername(e.target.value)} required placeholder="Hühnerbaron99" minLength={3} maxLength={20} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">E-Mail</label>
-              <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="deine@email.de" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Passwort</label>
-              <input className="form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="mind. 6 Zeichen" minLength={6} />
-            </div>
-            {error && <div className="form-error">⚠️ {error}</div>}
-            {success && <div style={{ color: 'var(--green)', fontWeight: 700, fontSize: '0.85rem', marginBottom: 8 }}>✅ {success}</div>}
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: 8 }}>
-              {loading ? 'Lädt…' : '🎉 Account erstellen'}
-            </button>
-          </form>
-        )}
-
-        <p style={{ fontSize: '0.72rem', color: 'var(--text-ll)', textAlign: 'center', marginTop: 16 }}>
-          Ohne Konto spielst du lokal – dein Fortschritt wird nicht in der Rangliste gespeichert.
-        </p>
       </div>
     </div>
   )
 }
+
+function var_gold_safe() { return '#70D870' }
