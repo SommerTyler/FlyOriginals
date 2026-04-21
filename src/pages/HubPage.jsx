@@ -231,163 +231,59 @@ export default function HubPage() {
   const SEC = `clamp(72px,9vw,130px) ${PAD}`
 
   return (
-    <div style={{ background:'var(--bg)', paddingTop:'clamp(70px,9vw,120px)', paddingBottom:'clamp(70px,9vw,120px)' }}>
+    <div style={{ background:'transparent', position:'relative' }}>
 
-      {/* ══ FIXED TORN PAPER FRAME ════════════════════════════ */}
-      {/* TOP — parchment strip with torn edge facing down */}
+      {/* ══════════════════════════════════════════════════════
+          FIXED TORN PAPER FRAME — stays at top/bottom of screen
+      ══════════════════════════════════════════════════════ */}
+
+      {/* TOP strip — parchment over content, torn edge pointing DOWN */}
       <div style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 400,
-        height: 'clamp(80px, 10vw, 130px)',
-        pointerEvents: 'none', overflow: 'hidden',
+        position: 'fixed', top: 0, left: 0, right: 0,
+        zIndex: 450, pointerEvents: 'none',
+        height: 'clamp(90px, 11vw, 140px)',
+        overflow: 'hidden',
+        background: '#c4a97d',
       }}>
         <img src="/torn.png" alt="" style={{
-          position: 'absolute', top: 0, left: '-5%',
-          width: '110%', height: 'auto',
-          transform: 'rotate(-4deg)',
-          transformOrigin: 'top left',
-          userSelect: 'none',
-          filter: 'brightness(.92)',
-        }} />
-      </div>
-
-      {/* BOTTOM — parchment strip flipped, torn edge facing up */}
-      <div style={{
-        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 400,
-        height: 'clamp(80px, 10vw, 130px)',
-        pointerEvents: 'none', overflow: 'hidden',
-      }}>
-        <img src="/torn.png" alt="" style={{
-          position: 'absolute', bottom: 0, left: '-5%',
-          width: '110%', height: 'auto',
-          transform: 'rotate(4deg) scaleY(-1)',
+          position: 'absolute',
+          bottom: 0, left: '-4%', width: '108%', height: 'auto',
+          transform: 'rotate(-3.5deg)',
           transformOrigin: 'bottom left',
           userSelect: 'none',
-          filter: 'brightness(.92)',
+          maxWidth: 'none',
         }} />
       </div>
-      {!loaded && <Preloader onDone={() => setLoaded(true)} />}
-      {!mobile && <Cursor />}
 
-      {/* Mobile hamburger overlay */}
-      {mobileMenu && <MobileMenu onClose={() => setMobileMenu(false)} />}
-
-      {/* Mobile hamburger button */}
-      {mobile && (
-        <button onClick={() => setMobileMenu(true)} style={{ position:'fixed', top:14, right:16, zIndex:400, background:'none', border:'1px solid var(--bdr)', color:'var(--gold2)', padding:'7px 12px', fontFamily:'var(--fu)', fontSize:'.6rem', fontWeight:600, letterSpacing:'.12em', cursor:'pointer' }}>
-          ☰ Menu
-        </button>
-      )}
-
-      {/* Admin toggle button */}
-      {isAdmin && (
-        <button onMouseEnter={H} onMouseLeave={L}
-          onClick={() => setAdminOpen(true)}
-          style={{
-            position:'fixed', bottom: mobile ? 14 : 28, right: mobile ? 14 : 28, zIndex:900,
-            background:'var(--red2)', border:'1px solid var(--red3)',
-            color:'var(--cream)', fontFamily:'var(--fu)', fontSize:'.58rem', fontWeight:700,
-            letterSpacing:'.14em', textTransform:'uppercase',
-            padding: mobile ? '10px 16px' : '11px 22px', cursor:'none',
-            boxShadow:'0 4px 24px rgba(145,0,32,.5)',
-            transition:'all .25s', display:'flex', alignItems:'center', gap:7,
-          }}
-          onMouseOver={e => e.currentTarget.style.background = 'var(--red3)'}
-          onMouseOut={e => e.currentTarget.style.background = 'var(--red2)'}
-        >✏️ {mobile ? '' : 'Website bearbeiten'}</button>
-      )}
-
-      {/* Admin Panel */}
-      {adminOpen && (
-        <AdminPanel
-          content={c}
-          saveSection={saveSection}
-          onClose={() => setAdminOpen(false)}
-        />
-      )}
-
-      {/* Keyframes */}
-      <style>{`
-        @keyframes charIn{from{opacity:0;transform:translateY(52%) skewY(2deg)}to{opacity:1;transform:none}}
-        @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-        @keyframes scrollCue{0%,100%{opacity:.15;transform:scaleY(.5)}50%{opacity:1;transform:scaleY(1)}}
-        @keyframes liveBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.4)}}
-        @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-        @keyframes wordIn{from{opacity:0;letter-spacing:.5em}to{opacity:1}}
-      `}</style>
-
-      {/* ══ HERO ══════════════════════════════════════════════ */}
-      <section id="hero" style={{ position:'relative', minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', overflow:'hidden', paddingTop:64 }}>
-
-        <div style={{ position:'absolute', top:64, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,var(--bdr2) 25%,var(--bdr2) 75%,transparent)', zIndex:3 }} />
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:1, background:'linear-gradient(90deg,transparent,var(--bdr2) 25%,var(--bdr2) 75%,transparent)', zIndex:3 }} />
-
-        <div ref={bgRef} style={{ position:'absolute', inset:'-25%', willChange:'transform' }}>
-          <div style={{ position:'absolute', inset:0, backgroundImage:'url(/bg.jpg)', backgroundSize:'cover', backgroundPosition:'center 40%', opacity: mobile ? .35 : .5 }} />
-        </div>
-        <div style={{ position:'absolute', inset:0, background: mobile ? 'rgba(5,0,1,.85)' : 'linear-gradient(120deg,rgba(5,0,1,.97) 40%,rgba(5,0,1,.6) 100%)' }} />
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'40%', background:'linear-gradient(180deg,transparent,var(--bg))' }} />
-
-        {!mobile && (
-          <>
-            <div style={{ position:'absolute', left:18, top:'50%', transform:'translateY(-50%)', zIndex:2 }}><Strip n={14} v /></div>
-            <div style={{ position:'absolute', right:18, top:'50%', transform:'translateY(-50%)', zIndex:2 }}><Strip n={14} v /></div>
-          </>
-        )}
-
-        {loaded && (
-          <div style={{ position:'relative', zIndex:4, padding: mobile ? '0 24px' : '0 clamp(60px,8vw,110px)', maxWidth:1000 }}>
-            <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:mobile?20:28, animation:'fadeUp .8s .05s both' }}>
-              <div style={{ width:22, height:1, background:'var(--gold)', opacity:.8 }} />
-              <span style={{ fontFamily:'var(--fu)', fontSize:'.56rem', fontWeight:600, letterSpacing:'.28em', textTransform:'uppercase', color:'var(--gold2)', opacity:.85 }}>{c.hero.eyebrow}</span>
-            </div>
-
-            <h1 style={{ fontFamily:'var(--fd)', fontWeight:400, fontSize: mobile ? 'clamp(2.8rem,11vw,4.5rem)' : 'clamp(3.4rem,8vw,7.5rem)', lineHeight:.94, color:'var(--cream)', marginBottom: mobile?22:28, perspective:1000 }}>
-              <Split text={c.hero.title1} delay={0.22} />
-              <Split text={c.hero.title2} delay={0.56} italic gold />
-            </h1>
-
-            <p style={{ fontFamily:'var(--fu)', fontWeight:400, fontSize: mobile ? '.85rem' : 'clamp(.82rem,1.1vw,.95rem)', lineHeight:1.9, color:'var(--c40)', maxWidth:440, marginBottom: mobile?36:48, animation:'fadeUp .9s .92s both' }}>
-              {c.hero.subtitle}
-            </p>
-
-            <div style={{ display:'flex', gap:12, flexWrap:'wrap', animation:'fadeUp .9s 1.05s both' }}>
-              <Btn href="#portfolio" red>Portfolio ansehen</Btn>
-              <Btn href="#kontakt">Projekt anfragen</Btn>
-            </div>
-          </div>
-        )}
-
-        {!mobile && loaded && (
-          <>
-            <div style={{ position:'absolute', bottom:30, left:'clamp(60px,8vw,110px)', display:'flex', alignItems:'center', gap:10, zIndex:4, animation:'fadeUp .8s 1.3s both' }}>
-              <div style={{ width:1, height:40, background:'linear-gradient(180deg,var(--gold),transparent)', animation:'scrollCue 2.2s ease-in-out infinite' }} />
-              <span style={{ fontFamily:'var(--fu)', fontSize:'.46rem', fontWeight:600, letterSpacing:'.3em', textTransform:'uppercase', color:'var(--c20)', writingMode:'vertical-rl' }}>Scroll</span>
-            </div>
-            <div style={{ position:'absolute', bottom:34, right:'clamp(36px,5vw,70px)', fontFamily:'var(--fu)', fontSize:'.44rem', fontWeight:600, letterSpacing:'.16em', color:'var(--c20)', animation:'fadeUp .8s 1.4s both', zIndex:4 }}>
-              <span style={{ color:'var(--gold)', opacity:.45 }}>■ REC</span> &nbsp;00:00:01:00
-            </div>
-          </>
-        )}
-
-        {eggOn && (
-          <button onClick={clickEgg} onMouseEnter={H} onMouseLeave={L} style={{ position:'absolute', bottom:28, right:'clamp(80px,10vw,140px)', zIndex:10, background:'none', border:'none', cursor: mobile?'pointer':'none', fontSize:'.9rem', opacity: eggN>0?.55:.08, transition:'all .4s', transform: eggN>0?'scale(1.9)':'scale(1)', filter: eggN>0?'brightness(3.5)':'none', padding:6 }}>🥚</button>
-        )}
-      </section>
-
-      <Marquee />
-
-      {/* ══ STATS ══════════════════════════════════════════════ */}
-      <div style={{ background:'var(--bg2)', padding:`clamp(36px,4.5vw,58px) ${PAD}`, display:'grid', gridTemplateColumns: mobile ? '1fr 1fr' : 'repeat(4,1fr)', gap: mobile ? '24px 0' : 0 }}>
-        {c.stats.items.map((it, i) => (
-          <div key={i} className="rv-fade" style={{ transitionDelay:`${i*.09}s`, textAlign:'center', borderLeft: (!mobile && i>0) ? '1px solid var(--bdr)' : 'none', padding:`0 clamp(12px,2vw,44px)`, borderTop: (mobile && i>=2) ? '1px solid var(--bdr)' : 'none', paddingTop: (mobile && i>=2) ? 24 : 0 }}>
-            <div style={{ fontFamily:'var(--fd)', fontStyle:'italic', fontSize:'clamp(2rem,3.5vw,3rem)', fontWeight:400, color:'var(--gold3)', lineHeight:1, marginBottom:8 }}>
-              <Count n={it.n} suffix={it.s} />
-            </div>
-            <div style={{ fontFamily:'var(--fu)', fontSize:'.54rem', fontWeight:600, letterSpacing:'.2em', textTransform:'uppercase', color:'var(--c40)', lineHeight:1.6, whiteSpace:'pre-line' }}>{it.label}</div>
-          </div>
-        ))}
+      {/* BOTTOM strip — parchment over content, torn edge pointing UP */}
+      <div style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0,
+        zIndex: 450, pointerEvents: 'none',
+        height: 'clamp(90px, 11vw, 140px)',
+        overflow: 'hidden',
+        background: '#c4a97d',
+      }}>
+        <img src="/torn.png" alt="" style={{
+          position: 'absolute',
+          top: 0, left: '-4%', width: '108%', height: 'auto',
+          transform: 'rotate(3.5deg) scaleY(-1)',
+          transformOrigin: 'top left',
+          userSelect: 'none',
+          maxWidth: 'none',
+        }} />
       </div>
+
+      {/* ══════════════════════════════════════════════════════
+          CRIMSON CONTENT BAND — the main dark content area
+      ══════════════════════════════════════════════════════ */}
+      <div style={{
+        background: 'var(--bg)',
+        minHeight: '100vh',
+        paddingTop: 'clamp(88px, 11vw, 140px)',
+        paddingBottom: 'clamp(88px, 11vw, 140px)',
+        position: 'relative',
+        zIndex: 1,
+      }}>
       <div className="hdiv" />
 
       {/* ══ ABOUT ══════════════════════════════════════════════ */}
@@ -615,6 +511,7 @@ export default function HubPage() {
           </div>
         </div>
       </footer>
+      </div>{/* end crimson content band */}
     </div>
   )
 }

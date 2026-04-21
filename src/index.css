@@ -32,7 +32,7 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--fu);
-  background: var(--bg);
+  background: #c4a97d;
   color: var(--cream);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
