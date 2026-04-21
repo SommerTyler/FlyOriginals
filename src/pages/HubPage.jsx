@@ -157,29 +157,6 @@ const Marquee = () => (
   </div>
 )
 
-/* ── Torn Paper Divider ─────────────────────────────────── */
-const TornPaper = ({ flip, rotate = -3 }) => (
-  <div style={{
-    position: 'relative', zIndex: 6, pointerEvents: 'none',
-    height: 110, overflow: 'visible',
-    marginTop: flip ? -55 : -55,
-    marginBottom: flip ? -55 : -55,
-  }}>
-    <img src="/torn.png" alt="" style={{
-      position: 'absolute',
-      left: '-6%', width: '112%', height: 'auto',
-      bottom: flip ? 'auto' : 0,
-      top: flip ? 0 : 'auto',
-      transform: `rotate(${flip ? -rotate : rotate}deg) ${flip ? 'scaleY(-1)' : ''}`,
-      transformOrigin: 'center center',
-      opacity: 0.14,
-      mixBlendMode: 'screen',
-      filter: 'brightness(1.6) sepia(0.3)',
-      userSelect: 'none',
-    }} />
-  </div>
-)
-
 
 /* ── Portfolio card ────────────────────────────────────── */
 function PCard({ n, tag, yr, title, desc, span, mobile }) {
@@ -254,7 +231,40 @@ export default function HubPage() {
   const SEC = `clamp(72px,9vw,130px) ${PAD}`
 
   return (
-    <div style={{ background:'var(--bg)' }}>
+    <div style={{ background:'var(--bg)', paddingTop:'clamp(70px,9vw,120px)', paddingBottom:'clamp(70px,9vw,120px)' }}>
+
+      {/* ══ FIXED TORN PAPER FRAME ════════════════════════════ */}
+      {/* TOP — parchment strip with torn edge facing down */}
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 400,
+        height: 'clamp(80px, 10vw, 130px)',
+        pointerEvents: 'none', overflow: 'hidden',
+      }}>
+        <img src="/torn.png" alt="" style={{
+          position: 'absolute', top: 0, left: '-5%',
+          width: '110%', height: 'auto',
+          transform: 'rotate(-4deg)',
+          transformOrigin: 'top left',
+          userSelect: 'none',
+          filter: 'brightness(.92)',
+        }} />
+      </div>
+
+      {/* BOTTOM — parchment strip flipped, torn edge facing up */}
+      <div style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 400,
+        height: 'clamp(80px, 10vw, 130px)',
+        pointerEvents: 'none', overflow: 'hidden',
+      }}>
+        <img src="/torn.png" alt="" style={{
+          position: 'absolute', bottom: 0, left: '-5%',
+          width: '110%', height: 'auto',
+          transform: 'rotate(4deg) scaleY(-1)',
+          transformOrigin: 'bottom left',
+          userSelect: 'none',
+          filter: 'brightness(.92)',
+        }} />
+      </div>
       {!loaded && <Preloader onDone={() => setLoaded(true)} />}
       {!mobile && <Cursor />}
 
@@ -305,9 +315,6 @@ export default function HubPage() {
         @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
         @keyframes wordIn{from{opacity:0;letter-spacing:.5em}to{opacity:1}}
       `}</style>
-
-      {/* ══ TORN TOP ══ */}
-      <TornPaper rotate={20} />
 
       {/* ══ HERO ══════════════════════════════════════════════ */}
       <section id="hero" style={{ position:'relative', minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', overflow:'hidden', paddingTop:64 }}>
@@ -579,9 +586,6 @@ export default function HubPage() {
           </div>
         </div>
       </section>
-
-      {/* ══ TORN BOTTOM ══ */}
-      <TornPaper flip rotate={20} />
 
       {/* ══ FOOTER ════════════════════════════════════════════ */}
       <div className="hdiv" />
