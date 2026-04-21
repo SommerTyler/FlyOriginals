@@ -248,7 +248,7 @@ export default function HubPage() {
         <img src="/torn.png" alt="" style={{
           position: 'absolute',
           bottom: 0, left: '-4%', width: '108%', height: 'auto',
-          transform: 'rotate(-3.5deg)',
+          transform: 'rotate(-5deg)',
           transformOrigin: 'bottom left',
           userSelect: 'none',
           maxWidth: 'none',
@@ -266,7 +266,7 @@ export default function HubPage() {
         <img src="/torn.png" alt="" style={{
           position: 'absolute',
           top: 0, left: '-4%', width: '108%', height: 'auto',
-          transform: 'rotate(3.5deg) scaleY(-1)',
+          transform: 'rotate(5deg) scaleY(-1)',
           transformOrigin: 'top left',
           userSelect: 'none',
           maxWidth: 'none',
