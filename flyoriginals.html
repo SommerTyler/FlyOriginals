@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlyOriginals – Born Fly. Stay Original.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Oswald:wght@200;400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --black:      #0d0005;
+      --maroon:     #3B0010;
+      --crimson:    #7A0020;
+      --red:        #CC1020;
+      --parchment:  #D4A96A;
+      --parchment-light: #E8C99A;
+      --white:      #FAF5EF;
+      --gold:       #C8972A;
+      --pattern-opacity: 0.08;
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Custom Cursor ── */
+    .cursor {
+      position: fixed; top: 0; left: 0;
+      width: 20px; height: 20px;
+      background: var(--red);
+      clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0;
+      width: 40px; height: 40px;
+      border: 1.5px solid rgba(204,16,32,0.5);
+      border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.3s, height 0.3s;
+    }
+    .cursor.hovered { width: 30px; height: 30px; }
+    .cursor-ring.hovered { width: 60px; height: 60px; }
+
+    /* ── Bow Tie SVG Pattern (CSS) ── */
+    .bg-pattern {
+      position: fixed; inset: 0; z-index: 0;
+      background-color: var(--black);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40' viewBox='0 0 60 40'%3E%3Cpath d='M0 5 L22 20 L0 35 Z M60 5 L38 20 L60 35 Z M22 20 L30 15 L38 20 L30 25 Z' fill='%237A0020' opacity='0.25'/%3E%3C/svg%3E");
+      background-size: 60px 40px;
+      opacity: 1;
+    }
+
+    /* radial vignette overlay */
+    .bg-vignette {
+      position: fixed; inset: 0; z-index: 1;
+      background: radial-gradient(ellipse at center,
+        rgba(58,0,16,0.3) 0%,
+        rgba(13,0,5,0.85) 80%,
+        rgba(13,0,5,0.97) 100%);
+      pointer-events: none;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(13,0,5,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 14px 60px;
+      border-bottom: 1px solid rgba(204,16,32,0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--white);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      animation: fadeInDown 0.8s ease 0.2s both;
+    }
+    .nav-logo .bow {
+      display: inline-block;
+      animation: bowtie-pulse 3s ease-in-out infinite;
+    }
+    .nav-links {
+      display: flex; gap: 40px; list-style: none;
+      animation: fadeInDown 0.8s ease 0.4s both;
+    }
+    .nav-links a {
+      color: rgba(250,245,239,0.7);
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: color 0.3s, letter-spacing 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 1px; background: var(--red);
+      transform: scaleX(0); transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--white); letter-spacing: 4px; }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    .nav-cta {
+      animation: fadeInDown 0.8s ease 0.6s both;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 28px;
+      background: var(--red);
+      color: var(--white);
+      font-family: 'Oswald', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none; cursor: none;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    .btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    .btn:hover::before { transform: translateX(100%); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(204,16,32,0.4); }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(250,245,239,0.3);
+      color: var(--white);
+    }
+    .btn-outline:hover { border-color: var(--red); box-shadow: 0 0 20px rgba(204,16,32,0.2); }
+    .btn-large { padding: 16px 48px; font-size: 1rem; }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; z-index: 10;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      overflow: hidden;
+    }
+
+    /* Floating bow ties */
+    .float-bow {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      animation: float-in var(--dur) var(--delay) ease-in-out infinite;
+      color: var(--crimson);
+      font-size: var(--size);
+      filter: blur(var(--blur));
+    }
+    @keyframes float-in {
+      0%   { opacity: 0; transform: translateY(20px) rotate(var(--rot)); }
+      20%  { opacity: var(--op); }
+      80%  { opacity: var(--op); }
+      100% { opacity: 0; transform: translateY(-60px) rotate(calc(var(--rot) + 20deg)); }
+    }
+
+    .hero-eyebrow {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.8rem;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 24px;
+      animation: fadeInUp 0.8s ease 0.3s both;
+    }
+
+    .hero-logo {
+      margin-bottom: 16px;
+      animation: logoEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    }
+    .hero-logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 12vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: 8px;
+      color: var(--white);
+      text-shadow: 0 0 60px rgba(204,16,32,0.3);
+      position: relative;
+    }
+    .hero-logo-text::after {
+      content: 'FLYORIGINALS';
+      position: absolute; inset: 0;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(204,16,32,0.4);
+      animation: glitch 6s ease-in-out 2s infinite;
+    }
+    @keyframes glitch {
+      0%, 92%, 100% { clip-path: none; transform: none; opacity: 1; }
+      94% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translate(-3px, 2px); opacity: 0.8; }
+      96% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translate(3px, -2px); opacity: 0.8; }
+      98% { clip-path: none; transform: none; opacity: 1; }
+    }
+
+    .hero-bowtie-center {
+      margin: 8px auto 28px;
+      display: block;
+      animation: bowtie-enter 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s both;
+    }
+    @keyframes bowtie-enter {
+      from { transform: scale(0) rotate(-180deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-weight: 300;
+      color: rgba(250,245,239,0.75);
+      max-width: 550px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.9s ease 1s both;
+    }
+
+    .hero-actions {
+      display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+      animation: fadeInUp 0.9s ease 1.2s both;
+    }
+
+    .hero-scroll {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(250,245,239,0.4);
+      animation: fadeIn 1s ease 2s both;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--red));
+      animation: scroll-line 2s ease-in-out infinite;
+    }
+    @keyframes scroll-line {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ── TORN PAPER DIVIDER ── */
+    .divider-paper {
+      position: relative; z-index: 20;
+      height: 120px;
+      margin: 0 -5%;
+      overflow: hidden;
+    }
+    .divider-paper-top {
+      transform: rotate(3.5deg);
+      transform-origin: center;
+      margin-top: -40px;
+    }
+    .divider-paper-bottom {
+      transform: rotate(-3.5deg);
+      transform-origin: center;
+      margin-bottom: -40px;
+    }
+    .divider-paper svg {
+      width: 110%; height: 100%;
+      display: block;
+    }
+    .divider-paper-top svg { filter: drop-shadow(0 -6px 12px rgba(0,0,0,0.5)); }
+    .divider-paper-bottom svg { filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)); }
+
+    /* ── SECTION BASE ── */
+    .section {
+      position: relative; z-index: 10;
+      padding: 100px 60px;
+    }
+    .section-parchment {
+      background: linear-gradient(135deg, #C8A060 0%, var(--parchment) 40%, #B8905A 100%);
+      color: var(--black);
+      position: relative; overflow: hidden;
+    }
+    .section-parchment::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+      background-size: 300px;
+      pointer-events: none; opacity: 0.5;
+    }
+
+    .section-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+    .section-parchment .section-label { color: var(--crimson); }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      letter-spacing: 4px;
+      margin-bottom: 24px;
+    }
+    .section-parchment .section-title { color: var(--black); }
+
+    .section-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 560px;
+      color: rgba(250,245,239,0.75);
+    }
+    .section-parchment .section-text { color: rgba(13,0,5,0.75); max-width: none; }
+
+    /* ── ABOUT ── */
+    #about .section-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .about-visual {
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .about-ring {
+      width: 280px; height: 280px;
+      border: 1px solid rgba(204,16,32,0.2);
+      border-radius: 50%;
+      position: absolute;
+      animation: spin-slow 20s linear infinite;
+    }
+    .about-ring:nth-child(2) {
+      width: 220px; height: 220px;
+      border-color: rgba(204,16,32,0.15);
+      animation-direction: reverse; animation-duration: 15s;
+    }
+    .about-ring::before {
+      content: '';
+      position: absolute; top: -4px; left: 50%;
+      transform: translateX(-50%);
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    .about-center {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    }
+    .about-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      color: var(--red);
+      line-height: 1;
+    }
+    .about-number-label {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(250,245,239,0.5);
+    }
+
+    /* ── PRODUCTS ── */
+    #products { padding: 100px 60px; }
+    .products-header {
+      max-width: 1200px; margin: 0 auto 60px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+    }
+    .products-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .product-card {
+      position: relative; overflow: hidden;
+      background: var(--maroon);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      padding: 2px;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: none;
+    }
+    .product-card:hover { transform: translateY(-8px) scale(1.02); }
+    .product-card-inner {
+      background: linear-gradient(135deg, var(--black) 0%, var(--maroon) 100%);
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+      padding: 32px;
+      position: relative; overflow: hidden;
+    }
+    .product-card-inner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 30%, rgba(204,16,32,0.08) 0%, transparent 70%);
+      transition: opacity 0.4s;
+    }
+    .product-card:hover .product-card-inner::before { opacity: 0; }
+    .product-card:hover .product-card-inner::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(204,16,32,0.15) 0%, transparent 70%);
+    }
+    .product-icon {
+      margin-bottom: 20px;
+      animation: bowtie-pulse 4s ease-in-out infinite;
+      animation-delay: var(--card-delay);
+    }
+    .product-tag {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+    .product-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+    .product-desc {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(250,245,239,0.55);
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+    .product-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .product-price-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: rgba(250,245,239,0.4);
+      display: block;
+      font-weight: 200;
+      margin-bottom: 4px;
+    }
+    .product-hover-line {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: var(--red);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .product-card:hover .product-hover-line { transform: scaleX(1); }
+
+    /* ── FEATURED / LARGE CARD ── */
+    .product-card.featured {
+      grid-column: span 2;
+    }
+    .product-card.featured .product-card-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: center;
+      padding: 48px;
+    }
+    .product-card.featured .product-name { font-size: 3rem; }
+
+    /* ── STATS ── */
+    #stats {
+      padding: 80px 60px;
+    }
+    .stats-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+    }
+    .stat {
+      text-align: center;
+      padding: 40px 20px;
+      border: 1px solid rgba(204,16,32,0.12);
+      position: relative; overflow: hidden;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+      transition: border-color 0.3s;
+    }
+    .stat:hover { border-color: rgba(204,16,32,0.4); }
+    .stat::before {
+      content: '';
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 40px; height: 2px; background: var(--red);
+    }
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--white);
+      line-height: 1;
+      display: block;
+    }
+    .stat-suffix { color: var(--red); }
+    .stat-label {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(250,245,239,0.4);
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* ── VALUES ── */
+    #values {
+      padding: 100px 60px;
+    }
+    .values-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .values-header { text-align: center; margin-bottom: 80px; }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+    .value-item { text-align: center; position: relative; }
+    .value-item::before {
+      content: '';
+      position: absolute; top: 24px; right: -24px;
+      width: 48px; height: 1px;
+      background: rgba(204,16,32,0.2);
+    }
+    .value-item:last-child::before { display: none; }
+    .value-icon {
+      margin: 0 auto 20px;
+      width: 60px; height: 60px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(204,16,32,0.3);
+      border-radius: 50%;
+      transition: transform 0.4s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .value-item:hover .value-icon {
+      transform: rotate(180deg);
+      border-color: var(--red);
+      box-shadow: 0 0 20px rgba(204,16,32,0.3);
+    }
+    .value-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+    .value-desc {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(250,245,239,0.5);
+      font-weight: 300;
+    }
+
+    /* ── CTA ── */
+    #cta {
+      position: relative; z-index: 20;
+      padding: 120px 60px;
+      text-align: center;
+      overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(122,0,32,0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 2; }
+    .cta-bow { margin: 0 auto 32px; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      letter-spacing: 6px;
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+    .cta-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: rgba(250,245,239,0.6);
+      margin-bottom: 48px;
+    }
+    .cta-actions { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 20;
+      padding: 60px;
+      border-top: 1px solid rgba(204,16,32,0.12);
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+    }
+    .footer-brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+    .footer-brand-desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: rgba(250,245,239,0.4);
+      font-weight: 300;
+      max-width: 260px;
+    }
+    .footer-col-title {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 400;
+      font-size: 0.75rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a {
+      color: rgba(250,245,239,0.45);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 300;
+      transition: color 0.3s, padding-left 0.3s;
+    }
+    .footer-links a:hover { color: var(--white); padding-left: 6px; }
+    .footer-bottom {
+      max-width: 1200px; margin: 40px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid rgba(204,16,32,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: rgba(250,245,239,0.25);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes logoEntrance {
+      from { opacity: 0; transform: scale(1.15) translateY(-20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes bowtie-pulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(204,16,32,0.3)); }
+      50%       { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(204,16,32,0.6)); }
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-40px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-left.revealed { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0; transform: translateX(40px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-right.revealed { opacity: 1; transform: translateX(0); }
+
+    /* ── Red accent line ── */
+    .accent-line {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 20px;
+    }
+    .accent-line::before, .accent-line::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(204,16,32,0.4), transparent);
+    }
+
+    /* ── Decorative bow tie large ── */
+    .deco-bow {
+      position: absolute; opacity: 0.04;
+      pointer-events: none;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      nav.scrolled { padding: 12px 24px; }
+      .nav-links { display: none; }
+      .section { padding: 60px 24px; }
+      #about .section-inner { grid-template-columns: 1fr; gap: 40px; }
+      .products-grid { grid-template-columns: 1fr; }
+      .product-card.featured { grid-column: span 1; }
+      .product-card.featured .product-card-inner { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .values-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      #products, #stats, #values, #cta { padding: 60px 24px; }
+      .products-header { flex-direction: column; gap: 20px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Background -->
+<div class="bg-pattern" aria-hidden="true"></div>
+<div class="bg-vignette" aria-hidden="true"></div>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <svg width="20" height="14" viewBox="0 0 40 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="bow">
+      <path d="M0 0 L18 14 L0 28 Z M40 0 L22 14 L40 28 Z M18 14 L20 11 L22 14 L20 17 Z" fill="#CC1020"/>
+    </svg>
+    FLYORIGINALS
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Story</a></li>
+    <li><a href="#products">Kollektion</a></li>
+    <li><a href="#values">Werte</a></li>
+    <li><a href="#cta">Shop</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#cta" class="btn">Shop Now</a>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section id="hero">
+
+  <!-- Floating bow ties -->
+  <div id="floatingBows" aria-hidden="true"></div>
+
+  <p class="hero-eyebrow">✦ Handgefertigt · Limitiert · Einzigartig ✦</p>
+
+  <div class="hero-logo">
+    <div class="hero-logo-text">FLYORIGINALS</div>
+  </div>
+
+  <!-- Bow tie SVG -->
+  <svg class="hero-bowtie-center" width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0 L36 28 L0 56 Z" fill="#CC1020"/>
+    <path d="M80 0 L44 28 L80 56 Z" fill="#CC1020"/>
+    <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#FF2030"/>
+    <line x1="33" y1="28" x2="47" y2="28" stroke="#FF2030" stroke-width="1.5" opacity="0.5"/>
+  </svg>
+
+  <p class="hero-tagline">
+    Fliegen-Krawatten, die deine Geschichte erzählen.<br>
+    Jedes Stück. Original. Für immer.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#products" class="btn btn-large">
+      <svg width="16" height="12" viewBox="0 0 32 24" fill="none"><path d="M0 0 L14 12 L0 24 Z M32 0 L18 12 L32 24 Z M14 12 L16 9 L18 12 L16 15 Z" fill="white"/></svg>
+      Kollektion entdecken
+    </a>
+    <a href="#about" class="btn btn-outline btn-large">Unsere Story</a>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ══════════════════ DIVIDER (top) ══════════════════ -->
+<div class="divider-paper divider-paper-top" aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="parchGrad1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#DDB878"/>
+        <stop offset="100%" stop-color="#C89050"/>
+      </linearGradient>
+    </defs>
+    <!-- Torn edge path -->
+    <path d="M0,0 L0,60
+      Q20,68 40,56 Q60,44 85,62 Q110,78 135,58 Q158,40 182,65
+      Q205,88 228,70 Q252,52 276,72 Q300,90 325,68 Q350,47 375,70
+      Q398,90 422,72 Q446,54 470,74 Q494,93 520,72 Q544,52 568,70
+      Q592,88 615,68 Q638,48 662,70 Q684,90 708,68 Q732,47 756,68
+      Q780,88 806,70 Q832,52 858,72 Q882,91 908,70 Q934,50 960,72
+      Q984,92 1010,70 Q1036,48 1062,72 Q1086,94 1110,72 Q1134,50 1158,72
+      Q1182,93 1210,72 Q1236,50 1262,70 Q1286,88 1310,68 Q1334,48 1358,68
+      Q1380,86 1400,68 Q1420,50 1440,72 L1440,0 Z"
+      fill="url(#parchGrad1)"/>
+  </svg>
+</div>
+
+<!-- ══════════════════ ABOUT ══════════════════ -->
+<section id="about" class="section section-parchment">
+  <!-- Decorative bow -->
+  <svg class="deco-bow" style="right:-60px;top:40px;transform:rotate(15deg)" width="300" height="210" viewBox="0 0 80 56" fill="none">
+    <path d="M0 0 L36 28 L0 56 Z M80 0 L44 28 L80 56 Z M36 28 L40 22 L44 28 L40 34 Z" fill="#3B0010"/>
+  </svg>
+
+  <div class="section-inner">
+    <div class="reveal-left" style="transition-delay:0.1s">
+      <p class="section-label">– Über uns</p>
+      <h2 class="section-title">Mehr als<br>eine Krawatte.</h2>
+      <p class="section-text">
+        FlyOriginals ist kein Label. Es ist eine Einstellung. Jede Fliegen-Krawatte entsteht in sorgfältiger Handarbeit – ein kleines Kunstwerk, das Persönlichkeit und Stil in ein einziges Accessoire vereint.
+      </p>
+      <br><br>
+      <p class="section-text">
+        Von der klassischen Seidenfliege bis zur kühnen Statement-Piece – wir fertigen das, was dich einzigartig macht. Born Fly. Stay Original.
+      </p>
+      <br><br>
+      <a href="#products" class="btn" style="background:#7A0020">Zum Shop →</a>
+    </div>
+
+    <div class="about-visual reveal-right" style="transition-delay:0.3s">
+      <div class="about-ring"></div>
+      <div class="about-ring"></div>
+      <div class="about-center">
+        <svg width="100" height="70" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: bowtie-pulse 3s ease-in-out infinite">
+          <path d="M0 0 L36 28 L0 56 Z" fill="#CC1020"/>
+          <path d="M80 0 L44 28 L80 56 Z" fill="#CC1020"/>
+          <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#FF2030"/>
+        </svg>
+        <span class="about-number">XII</span>
+        <span class="about-number-label">Jahre Handwerk</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ DIVIDER (bottom of parchment) ══════════════════ -->
+<div class="divider-paper divider-paper-bottom" aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="parchGrad2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#C89050"/>
+        <stop offset="100%" stop-color="#DDB878"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,120 L0,52
+      Q22,44 46,58 Q70,72 95,50 Q118,30 143,52
+      Q166,72 192,50 Q218,28 244,52 Q268,74 292,50
+      Q316,28 342,52 Q368,75 395,52 Q420,30 445,54
+      Q470,76 496,52 Q522,28 548,54 Q572,78 600,52
+      Q626,28 652,54 Q678,78 705,52 Q730,28 756,54
+      Q782,78 810,52 Q836,28 862,54 Q887,78 913,52
+      Q940,28 967,54 Q992,78 1018,52 Q1044,28 1070,54
+      Q1094,78 1120,52 Q1146,26 1172,52 Q1198,76 1224,52
+      Q1248,28 1274,52 Q1300,74 1326,52 Q1350,30 1376,52
+      Q1400,72 1420,56 Q1432,48 1440,52 L1440,120 Z"
+      fill="url(#parchGrad2)"/>
+  </svg>
+</div>
+
+<!-- ══════════════════ PRODUCTS ══════════════════ -->
+<section id="products">
+  <div class="products-header">
+    <div class="reveal">
+      <p class="section-label">– Kollektion</p>
+      <h2 class="section-title">Unsere Fliegen</h2>
+    </div>
+    <a href="#cta" class="btn btn-outline reveal" style="transition-delay:0.2s">Alle ansehen →</a>
+  </div>
+
+  <div class="products-grid">
+
+    <!-- Featured -->
+    <div class="product-card featured reveal" style="background: linear-gradient(135deg, var(--crimson), var(--maroon)); --card-delay: 0s">
+      <div class="product-card-inner">
+        <div>
+          <p class="product-tag">✦ Signature</p>
+          <h3 class="product-name">The Classic<br>Original</h3>
+          <p class="product-desc">Die Ikone. Handgenäht aus edler Seide mit dem klassischen Fly-Originals-Knoten – für jeden Anlass, der unvergesslich sein soll.</p>
+          <span class="product-price-label">ab</span>
+          <span class="product-price">€ 89,–</span>
+          <br><br>
+          <a href="#cta" class="btn" style="margin-top:16px">Jetzt kaufen</a>
+        </div>
+        <div class="product-icon" style="display:flex;justify-content:center">
+          <svg width="140" height="100" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0 L36 28 L0 56 Z" fill="#CC1020" opacity="0.9"/>
+            <path d="M80 0 L44 28 L80 56 Z" fill="#CC1020" opacity="0.9"/>
+            <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#FF4050"/>
+            <line x1="30" y1="28" x2="50" y2="28" stroke="#FF6070" stroke-width="1.5" opacity="0.6"/>
+          </svg>
+        </div>
+      </div>
+      <div class="product-hover-line"></div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="product-card reveal" style="transition-delay:0.15s;--card-delay:0.5s">
+      <div class="product-card-inner">
+        <div class="product-icon">
+          <svg width="70" height="50" viewBox="0 0 80 56" fill="none">
+            <path d="M0 0 L36 28 L0 56 Z" fill="#7A0020"/>
+            <path d="M80 0 L44 28 L80 56 Z" fill="#7A0020"/>
+            <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#CC1020"/>
+          </svg>
+        </div>
+        <p class="product-tag">Limitiert</p>
+        <h3 class="product-name">Velvet<br>Noir</h3>
+        <p class="product-desc">Schwarzer Samt, roter Kern. Für Abende, die in Erinnerung bleiben.</p>
+        <div>
+          <span class="product-price-label">ab</span>
+          <span class="product-price">€ 119,–</span>
+        </div>
+      </div>
+      <div class="product-hover-line"></div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="product-card reveal" style="transition-delay:0.25s;--card-delay:1s">
+      <div class="product-card-inner">
+        <div class="product-icon">
+          <svg width="70" height="50" viewBox="0 0 80 56" fill="none">
+            <path d="M0 0 L36 28 L0 56 Z" fill="#3B0010"/>
+            <path d="M80 0 L44 28 L80 56 Z" fill="#3B0010"/>
+            <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#CC1020"/>
+            <path d="M10 10 L36 28 M70 10 L44 28" stroke="#7A0020" stroke-width="0.5" opacity="0.6"/>
+          </svg>
+        </div>
+        <p class="product-tag">Neu</p>
+        <h3 class="product-name">Midnight<br>Edition</h3>
+        <p class="product-desc">Dunkel wie die Nacht. Scharf wie dein Stil.</p>
+        <div>
+          <span class="product-price-label">ab</span>
+          <span class="product-price">€ 99,–</span>
+        </div>
+      </div>
+      <div class="product-hover-line"></div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="product-card reveal" style="transition-delay:0.35s;--card-delay:1.5s">
+      <div class="product-card-inner">
+        <div class="product-icon">
+          <svg width="70" height="50" viewBox="0 0 80 56" fill="none">
+            <path d="M0 0 L36 28 L0 56 Z" fill="#8B1A1A"/>
+            <path d="M80 0 L44 28 L80 56 Z" fill="#8B1A1A"/>
+            <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#CC1020"/>
+          </svg>
+        </div>
+        <p class="product-tag">Bestseller</p>
+        <h3 class="product-name">Red<br>Heritage</h3>
+        <p class="product-desc">Klassisches Rot, zeitloses Design. Das Original aller Originals.</p>
+        <div>
+          <span class="product-price-label">ab</span>
+          <span class="product-price">€ 79,–</span>
+        </div>
+      </div>
+      <div class="product-hover-line"></div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="product-card reveal" style="transition-delay:0.45s;--card-delay:2s">
+      <div class="product-card-inner">
+        <div class="product-icon">
+          <svg width="70" height="50" viewBox="0 0 80 56" fill="none">
+            <path d="M0 0 L36 28 L0 56 Z" fill="#C8972A" opacity="0.8"/>
+            <path d="M80 0 L44 28 L80 56 Z" fill="#C8972A" opacity="0.8"/>
+            <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#FFD060"/>
+          </svg>
+        </div>
+        <p class="product-tag">Exklusiv</p>
+        <h3 class="product-name">Golden<br>Era</h3>
+        <p class="product-desc">Vergoldet. Unvergessen. Nur für die, die wirklich fliegen wollen.</p>
+        <div>
+          <span class="product-price-label">ab</span>
+          <span class="product-price">€ 149,–</span>
+        </div>
+      </div>
+      <div class="product-hover-line"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ STATS ══════════════════ -->
+<section id="stats">
+  <div class="stats-inner">
+    <div class="stat reveal" style="transition-delay:0s">
+      <span class="stat-number"><span class="counter" data-target="2400">0</span><span class="stat-suffix">+</span></span>
+      <span class="stat-label">Fliegen verkauft</span>
+    </div>
+    <div class="stat reveal" style="transition-delay:0.1s">
+      <span class="stat-number"><span class="counter" data-target="18">0</span><span class="stat-suffix"></span></span>
+      <span class="stat-label">Länder weltweit</span>
+    </div>
+    <div class="stat reveal" style="transition-delay:0.2s">
+      <span class="stat-number"><span class="counter" data-target="12">0</span><span class="stat-suffix"></span></span>
+      <span class="stat-label">Jahre Erfahrung</span>
+    </div>
+    <div class="stat reveal" style="transition-delay:0.3s">
+      <span class="stat-number"><span class="counter" data-target="100">0</span><span class="stat-suffix">%</span></span>
+      <span class="stat-label">Handarbeit</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ DIVIDER (top of parchment 2) ══════════════════ -->
+<div class="divider-paper divider-paper-top" aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,0 L0,55
+      Q30,65 60,50 Q88,36 115,58 Q142,80 170,58
+      Q197,37 224,60 Q250,82 278,58 Q305,35 332,60
+      Q358,84 385,60 Q412,36 440,62 Q468,86 496,60
+      Q522,35 550,62 Q578,88 606,62 Q634,36 662,62
+      Q690,88 720,62 Q748,36 776,62 Q804,88 832,62
+      Q860,36 888,62 Q916,88 945,62 Q972,36 1000,62
+      Q1026,88 1054,62 Q1082,36 1110,62 Q1136,88 1163,62
+      Q1190,36 1218,62 Q1244,88 1271,62 Q1298,36 1325,60
+      Q1352,84 1380,60 Q1408,36 1440,60 L1440,0 Z"
+      fill="#D4A96A"/>
+  </svg>
+</div>
+
+<!-- ══════════════════ VALUES ══════════════════ -->
+<section id="values" class="section section-parchment">
+  <div class="values-inner">
+    <div class="values-header reveal">
+      <p class="section-label">– Was uns ausmacht</p>
+      <h2 class="section-title">Unsere Werte</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-item reveal" style="transition-delay:0.1s">
+        <div class="value-icon" style="border-color:rgba(122,0,32,0.3)">
+          <svg width="28" height="20" viewBox="0 0 80 56" fill="none">
+            <path d="M0 0 L36 28 L0 56 Z M80 0 L44 28 L80 56 Z M36 28 L40 22 L44 28 L40 34 Z" fill="#7A0020"/>
+          </svg>
+        </div>
+        <h3 class="value-title" style="color:var(--black)">Handwerk</h3>
+        <p class="value-desc" style="color:rgba(13,0,5,0.6)">Jede Fliege wird von Hand gefertigt – mit Präzision, Leidenschaft und jahrelanger Erfahrung.</p>
+      </div>
+      <div class="value-item reveal" style="transition-delay:0.2s">
+        <div class="value-icon" style="border-color:rgba(122,0,32,0.3)">
+          <svg width="28" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A0020" stroke-width="1.5">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+          </svg>
+        </div>
+        <h3 class="value-title" style="color:var(--black)">Originalität</h3>
+        <p class="value-desc" style="color:rgba(13,0,5,0.6)">Keine Massenware. Jedes Stück ist ein Original – limitiert, besonders und für immer deins.</p>
+      </div>
+      <div class="value-item reveal" style="transition-delay:0.3s">
+        <div class="value-icon" style="border-color:rgba(122,0,32,0.3)">
+          <svg width="28" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A0020" stroke-width="1.5">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <h3 class="value-title" style="color:var(--black)">Leidenschaft</h3>
+        <p class="value-desc" style="color:rgba(13,0,5,0.6)">Was wir machen, machen wir mit Herzblut. Das spürt man – beim Tragen wie beim Verschenken.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ DIVIDER (bottom) ══════════════════ -->
+<div class="divider-paper divider-paper-bottom" aria-hidden="true">
+  <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,120 L0,58
+      Q28,48 56,62 Q82,75 110,56 Q138,37 166,58
+      Q194,78 222,56 Q248,35 276,58 Q302,80 330,56
+      Q358,33 386,58 Q414,82 442,58 Q468,35 496,60
+      Q524,84 552,58 Q580,33 608,58 Q636,82 665,58
+      Q692,35 720,58 Q748,80 776,58 Q804,36 832,58
+      Q860,80 888,58 Q916,36 944,58 Q972,80 1001,58
+      Q1028,36 1056,58 Q1084,80 1112,58 Q1140,36 1168,58
+      Q1196,80 1224,58 Q1252,36 1280,58 Q1308,80 1336,60
+      Q1362,42 1390,58 Q1416,74 1440,58 L1440,120 Z"
+      fill="#D4A96A"/>
+  </svg>
+</div>
+
+<!-- ══════════════════ CTA ══════════════════ -->
+<section id="cta">
+  <!-- Floating bow ties CTA -->
+  <div id="ctaBows" aria-hidden="true"></div>
+
+  <div class="cta-inner">
+    <svg class="cta-bow" width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: bowtie-pulse 2.5s ease-in-out infinite">
+      <path d="M0 0 L36 28 L0 56 Z" fill="#CC1020"/>
+      <path d="M80 0 L44 28 L80 56 Z" fill="#CC1020"/>
+      <path d="M36 28 L40 22 L44 28 L40 34 Z" fill="#FF4050"/>
+    </svg>
+
+    <div class="accent-line reveal">
+      <span style="font-family:'Oswald',sans-serif;font-weight:200;font-size:0.75rem;letter-spacing:6px;color:var(--red);white-space:nowrap">BEREIT ZU FLIEGEN?</span>
+    </div>
+
+    <h2 class="cta-title reveal" style="transition-delay:0.1s">
+      Deine Fliege.<br>Dein Statement.
+    </h2>
+    <p class="cta-sub reveal" style="transition-delay:0.2s">
+      Werde Teil der FlyOriginals-Bewegung und trag das Original.
+    </p>
+    <div class="cta-actions reveal" style="transition-delay:0.3s">
+      <a href="#products" class="btn btn-large">
+        <svg width="16" height="12" viewBox="0 0 32 24" fill="none"><path d="M0 0 L14 12 L0 24 Z M32 0 L18 12 L32 24 Z M14 12 L16 9 L18 12 L16 15 Z" fill="white"/></svg>
+        Jetzt shoppen
+      </a>
+      <a href="#about" class="btn btn-outline btn-large">Mehr erfahren</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">
+        <svg width="20" height="14" viewBox="0 0 40 28" fill="none" style="margin-right:8px;vertical-align:middle">
+          <path d="M0 0 L18 14 L0 28 Z M40 0 L22 14 L40 28 Z M18 14 L20 11 L22 14 L20 17 Z" fill="#CC1020"/>
+        </svg>
+        FLYORIGINALS
+      </div>
+      <p class="footer-brand-desc">Handgefertigte Fliegen-Krawatten für Menschen, die es wagen, wirklich sie selbst zu sein.</p>
+    </div>
+
+    <div>
+      <h4 class="footer-col-title">Shop</h4>
+      <ul class="footer-links">
+        <li><a href="#">Kollektion</a></li>
+        <li><a href="#">Limitierte Editionen</a></li>
+        <li><a href="#">Custom Designs</a></li>
+        <li><a href="#">Geschenke</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer-col-title">Info</h4>
+      <ul class="footer-links">
+        <li><a href="#">Über uns</a></li>
+        <li><a href="#">Handwerk</a></li>
+        <li><a href="#">Versand</a></li>
+        <li><a href="#">Kontakt</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4 class="footer-col-title">Legal</h4>
+      <ul class="footer-links">
+        <li><a href="#">Impressum</a></li>
+        <li><a href="#">Datenschutz</a></li>
+        <li><a href="#">AGB</a></li>
+        <li><a href="#">Widerruf</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2025 FlyOriginals. Alle Rechte vorbehalten.</span>
+    <span>BORN FLY · STAY ORIGINAL</span>
+    <svg width="32" height="22" viewBox="0 0 80 56" fill="none">
+      <path d="M0 0 L36 28 L0 56 Z M80 0 L44 28 L80 56 Z M36 28 L40 22 L44 28 L40 34 Z" fill="#CC1020" opacity="0.4"/>
+    </svg>
+  </div>
+</footer>
+
+<!-- ══════════════════ SCRIPTS ══════════════════ -->
+<script>
+  // ── Custom Cursor ──
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top  = mouseY + 'px';
+  });
+
+  // Lag for ring
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top  = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .product-card, .stat, .value-icon').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.classList.add('hovered'); ring.classList.add('hovered'); });
+    el.addEventListener('mouseleave', () => { cursor.classList.remove('hovered'); ring.classList.remove('hovered'); });
+  });
+
+  // ── Nav scroll ──
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // ── Floating Bow Ties (Hero) ──
+  function createFloatingBows(containerId, count) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    for (let i = 0; i < count; i++) {
+      const div = document.createElement('div');
+      div.className = 'float-bow';
+      const size = Math.random() * 40 + 20;
+      div.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top:  ${Math.random() * 100}%;
+        --size: ${size}px;
+        --dur:  ${Math.random() * 6 + 5}s;
+        --delay: ${Math.random() * 8}s;
+        --rot:  ${Math.random() * 60 - 30}deg;
+        --blur: ${Math.random() * 3}px;
+        --op: ${Math.random() * 0.15 + 0.03};
+      `;
+      div.innerHTML = `<svg width="${size}" height="${size*0.7}" viewBox="0 0 80 56" fill="none">
+        <path d="M0 0 L36 28 L0 56 Z M80 0 L44 28 L80 56 Z M36 28 L40 22 L44 28 L40 34 Z" fill="currentColor"/>
+      </svg>`;
+      container.appendChild(div);
+    }
+  }
+  createFloatingBows('floatingBows', 18);
+  createFloatingBows('ctaBows', 10);
+
+  // ── Scroll Reveal ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    revealObserver.observe(el);
+  });
+
+  // ── Counter Animation ──
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.done) {
+        entry.target.dataset.done = 'true';
+        const target = parseInt(entry.target.dataset.target);
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          entry.target.textContent = Math.round(current).toLocaleString('de');
+          if (current >= target) clearInterval(timer);
+        }, 16);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+  // ── Parallax (subtle) ──
+  const heroEl = document.getElementById('hero');
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    if (heroEl) {
+      heroEl.style.transform = `translateY(${scrollY * 0.25}px)`;
+    }
+  }, { passive: true });
+
+  // ── Background pattern parallax ──
+  const bgPattern = document.querySelector('.bg-pattern');
+  window.addEventListener('scroll', () => {
+    if (bgPattern) {
+      bgPattern.style.backgroundPosition = `0 ${window.scrollY * 0.15}px`;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
