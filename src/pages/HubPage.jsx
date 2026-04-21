@@ -157,6 +157,30 @@ const Marquee = () => (
   </div>
 )
 
+/* ── Torn Paper Divider ─────────────────────────────────── */
+const TornPaper = ({ flip, rotate = -3 }) => (
+  <div style={{
+    position: 'relative', zIndex: 6, pointerEvents: 'none',
+    height: 110, overflow: 'visible',
+    marginTop: flip ? -55 : -55,
+    marginBottom: flip ? -55 : -55,
+  }}>
+    <img src="/torn.png" alt="" style={{
+      position: 'absolute',
+      left: '-6%', width: '112%', height: 'auto',
+      bottom: flip ? 'auto' : 0,
+      top: flip ? 0 : 'auto',
+      transform: `rotate(${flip ? -rotate : rotate}deg) ${flip ? 'scaleY(-1)' : ''}`,
+      transformOrigin: 'center center',
+      opacity: 0.14,
+      mixBlendMode: 'screen',
+      filter: 'brightness(1.6) sepia(0.3)',
+      userSelect: 'none',
+    }} />
+  </div>
+)
+
+
 /* ── Portfolio card ────────────────────────────────────── */
 function PCard({ n, tag, yr, title, desc, span, mobile }) {
   const [hov, setHov] = useState(false)
@@ -281,6 +305,9 @@ export default function HubPage() {
         @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
         @keyframes wordIn{from{opacity:0;letter-spacing:.5em}to{opacity:1}}
       `}</style>
+
+      {/* ══ TORN TOP ══ */}
+      <TornPaper rotate={20} />
 
       {/* ══ HERO ══════════════════════════════════════════════ */}
       <section id="hero" style={{ position:'relative', minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', overflow:'hidden', paddingTop:64 }}>
@@ -552,6 +579,9 @@ export default function HubPage() {
           </div>
         </div>
       </section>
+
+      {/* ══ TORN BOTTOM ══ */}
+      <TornPaper flip rotate={20} />
 
       {/* ══ FOOTER ════════════════════════════════════════════ */}
       <div className="hdiv" />
