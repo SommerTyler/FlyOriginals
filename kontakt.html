@@ -31,25 +31,53 @@
     /* ── CURSOR ── */
     .cursor {
       position: fixed; top: 0; left: 0;
-      width: 20px; height: 20px;
-      background: var(--red);
-      clip-path: polygon(50% 0%, 0% 50%, 50% 100%, 100% 50%);
+      width: 38px; height: 22px;
       pointer-events: none; z-index: 9999;
       transform: translate(-50%, -50%);
-      mix-blend-mode: screen;
-      transition: width 0.2s, height 0.2s;
+      filter: drop-shadow(0 0 6px rgba(204,16,32,0.7));
+      animation: bow-spin 3.5s linear infinite;
+      transition: transform 0.15s, filter 0.2s;
+      will-change: transform;
     }
+    .cursor svg { width: 100%; height: 100%; display: block; }
     .cursor-ring {
       position: fixed; top: 0; left: 0;
-      width: 40px; height: 40px;
-      border: 1.5px solid rgba(204,16,32,0.5);
+      width: 56px; height: 56px;
+      border: 1px solid rgba(204,16,32,0.35);
       border-radius: 50%;
       pointer-events: none; z-index: 9998;
       transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s;
+      transition: width 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  height 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  border-color 0.3s;
     }
-    .cursor.hovered { width: 30px; height: 30px; }
-    .cursor-ring.hovered { width: 60px; height: 60px; }
+    .cursor-ring::before {
+      content: '';
+      position: absolute; inset: 6px;
+      border: 1px solid rgba(204,16,32,0.15);
+      border-radius: 50%;
+    }
+    .cursor.hovered {
+      width: 52px; height: 30px;
+      filter: drop-shadow(0 0 14px rgba(204,16,32,1)) drop-shadow(0 0 28px rgba(204,16,32,0.5));
+      animation: bow-spin-fast 0.7s linear infinite;
+    }
+    .cursor-ring.hovered {
+      width: 80px; height: 80px;
+      border-color: rgba(204,16,32,0.6);
+    }
+    @keyframes bow-spin {
+      0%   { rotate: 0deg; }
+      20%  { rotate: 8deg; }
+      40%  { rotate: -6deg; }
+      60%  { rotate: 10deg; }
+      80%  { rotate: -4deg; }
+      100% { rotate: 0deg; }
+    }
+    @keyframes bow-spin-fast {
+      0%   { rotate: 0deg; }
+      100% { rotate: 360deg; }
+    }
 
     /* ── BG ── */
     .bg-fixed {
@@ -316,7 +344,22 @@
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
+<div class="cursor" id="cursor">
+  <svg viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g filter="url(#glow)">
+      <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
+      <path fill="#CC1020" d="M131.55,78.24l48.83,25.33c7.08,3.09,14.78-2.29,15.91-11.15a319.4,319.4,0,0,0,2.48-40.19A317.7,317.7,0,0,0,196.28,12C195.15,3.16,187.48-2.2,180.43.88L131.55,26.22c-4.7,2.05-7.82,7.37-7.82,13.32V64.92C123.73,70.87,126.85,76.19,131.55,78.24Z"/>
+      <path fill="#e03040" d="M88.88,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.17-7.16V36.15A7.17,7.17,0,0,0,88.88,29Z"/>
+      <path fill="#e03040" d="M109.89,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.16-7.16V36.15A7.17,7.17,0,0,0,109.89,29Z"/>
+    </g>
+  </svg>
+</div>
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="bg-fixed"></div>
 <div class="bg-vignette"></div>
