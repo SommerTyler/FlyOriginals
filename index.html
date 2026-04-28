@@ -66,72 +66,6 @@
       pointer-events: none;
     }
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 22px 64px;
-      transition: all 0.4s;
-    }
-    nav.scrolled {
-      background: rgba(13,0,5,0.92);
-      backdrop-filter: blur(16px);
-      padding: 14px 64px;
-      border-bottom: 1px solid rgba(204,16,32,0.2);
-    }
-    .nav-logo {
-      display: flex; align-items: center; gap: 12px;
-      animation: fadeInDown 0.8s ease 0.2s both;
-    }
-    .nav-logo img {
-      height: 32px;
-      filter: drop-shadow(0 0 12px rgba(204,16,32,0.3));
-      transition: filter 0.3s;
-    }
-    .nav-logo img:hover { filter: drop-shadow(0 0 20px rgba(204,16,32,0.8)); }
-
-    .nav-links {
-      display: flex; gap: 44px; list-style: none;
-      animation: fadeInDown 0.8s ease 0.4s both;
-    }
-    .nav-links a {
-      color: rgba(250,245,239,0.7);
-      text-decoration: none;
-      font-family: 'Oswald', sans-serif;
-      font-weight: 200; font-size: 0.8rem;
-      letter-spacing: 3px; text-transform: uppercase;
-      transition: color 0.3s, letter-spacing 0.3s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute; bottom: -5px; left: 0; right: 0;
-      height: 1px; background: var(--red);
-      transform: scaleX(0); transform-origin: right;
-      transition: transform 0.3s ease;
-    }
-    .nav-links a:hover { color: var(--white); letter-spacing: 4px; }
-    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
-
-    .nav-socials {
-      display: flex; gap: 14px;
-      animation: fadeInDown 0.8s ease 0.6s both;
-    }
-    .nav-socials a {
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid rgba(204,16,32,0.3);
-      border-radius: 50%;
-      color: var(--red);
-      transition: all 0.3s;
-      cursor: none;
-      font-size: 0.7rem;
-    }
-    .nav-socials a:hover {
-      background: var(--red);
-      color: var(--white);
-      box-shadow: 0 0 16px rgba(204,16,32,0.5);
-    }
 
     .btn {
       display: inline-flex; align-items: center; gap: 10px;
@@ -171,7 +105,7 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       text-align: center;
-      padding: 120px 40px 100px;
+      padding: 80px 40px 100px;
       overflow: hidden;
     }
 
@@ -647,8 +581,6 @@
     }
 
     @media (max-width: 768px) {
-      nav, nav.scrolled { padding: 14px 24px; }
-      .nav-links { display: none; }
       .section { padding: 60px 24px; }
       .projects-grid { grid-template-columns: 1fr; }
       .partners-grid { grid-template-columns: repeat(2, 1fr); }
@@ -696,29 +628,6 @@
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="bg-fixed"></div>
 <div class="bg-vignette"></div>
-
-<!-- ═══ NAV ═══ -->
-<nav id="mainNav">
-  <a href="#" class="nav-logo">
-    <img src="img_03.png" alt="FlyOriginals">
-  </a>
-  <ul class="nav-links">
-    <li><a href="#projects">Projekte</a></li>
-    <li><a href="#partners">Partner</a></li>
-    <li><a href="#about">Über uns</a></li>
-  </ul>
-  <div class="nav-socials">
-    <a href="https://www.youtube.com/@flyoriginals" target="_blank" title="YouTube" style="opacity:0;animation:fadeInDown 0.8s ease 0.8s both">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
-    </a>
-    <a href="https://www.twitch.tv/flyoriginals" target="_blank" title="Twitch" style="opacity:0;animation:fadeInDown 0.8s ease 0.9s both">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M11.6 6H13v4.5h-1.4V6zm3.8 0H17v4.5h-1.4V6zM2.2 0L0 4.5v17.1h5.8V24h3.2l2.4-2.4h4l5.4-5.4V0H2.2zm17 15.4-3.2 3.2H10L7.6 21v-2.4H3V1.6h16.2v13.8z"/></svg>
-    </a>
-    <a href="https://www.instagram.com/the.flyoriginals" target="_blank" title="Instagram" style="opacity:0;animation:fadeInDown 0.8s ease 1s both">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.9s0 3.6-.1 4.9c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-5-5C2 16.6 2 16.3 2 12s0-3.6.1-4.9c.2-3.3 1.7-4.8 5-5C8.4 2.2 8.8 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9C.3 21.3 2.7 23.7 7.1 23.9 8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9C23.7 2.7 21.3.3 16.9.1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4A6.2 6.2 0 0 0 12 5.8zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z"/></svg>
-    </a>
-  </div>
-</nav>
 
 <!-- ═══ HERO ═══ -->
 <section id="hero">
@@ -925,7 +834,7 @@
         <li><a href="#projects">Projekte</a></li>
         <li><a href="#partners">Partner</a></li>
         <li><a href="#about">Über uns</a></li>
-        <li><a href="#">Kontakt</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
       </ul>
     </div>
     <div>
@@ -934,7 +843,6 @@
         <li><a href="impressum.html">Impressum</a></li>
         <li><a href="datenschutz.html">Datenschutz</a></li>
         <li><a href="agb.html">AGB</a></li>
-        <li><a href="admin.html" style="color:rgba(204,16,32,0.5);margin-top:8px;display:inline-block;">⚙ Admin Login</a></li>
       </ul>
     </div>
     <div>
@@ -970,7 +878,7 @@
           </div>
           <span class="footer-social-label">Cosplay</span>
         </a>
-        <a href="https://www.instagram.com/the.flyoriginals" target="_blank" class="footer-social-item">
+        <a href="https://x.com/theflyoriginals" target="_blank" class="footer-social-item">
           <div class="footer-social-icon">
             <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </div>
@@ -1016,9 +924,6 @@
     });
   });
 
-  // Nav scroll
-  const nav = document.getElementById('mainNav');
-  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
 
 
     const chickenImages = [
