@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontakt – FlyOriginals</title>
   <link rel="preload" href="img_00.jpg" as="image">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Oswald:wght@200;400;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-light.otf') format('opentype'); font-weight: 300; font-display: swap; }
+    @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-regular.otf') format('opentype'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-medium.otf') format('opentype'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-bold.otf') format('opentype'); font-weight: 700; font-display: swap; }
+    @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-black.otf') format('opentype'); font-weight: 900; font-display: swap; }
+    @font-face { font-family: 'BabyDoll'; src: url('fonts/baby-doll.otf') format('opentype'); font-weight: 400; font-display: swap; }
+  </style>
   <style>
     :root {
       --black: #0d0005;
@@ -20,7 +27,7 @@
     html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'MadeTommy', sans-serif;
       color: var(--white);
       background: var(--black);
       overflow-x: hidden;
@@ -108,7 +115,7 @@
     }
     .back-link {
       display: inline-flex; align-items: center; gap: 10px;
-      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-family: 'MadeTommy', sans-serif; font-weight: 200;
       font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase;
       color: rgba(250,245,239,0.4);
       text-decoration: none;
@@ -125,7 +132,7 @@
     .back-link:hover svg { transform: translateX(-4px); }
 
     .section-label {
-      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-family: 'MadeTommy', sans-serif; font-weight: 200;
       font-size: 0.68rem; letter-spacing: 5px; text-transform: uppercase;
       color: var(--red);
       display: inline-block;
@@ -164,7 +171,7 @@
     }
     .form-label {
       display: block;
-      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-family: 'MadeTommy', sans-serif; font-weight: 200;
       font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
       color: rgba(250,245,239,0.5);
       margin-bottom: 10px;
@@ -174,7 +181,7 @@
       background: rgba(13,0,5,0.6);
       border: 1px solid rgba(204,16,32,0.2);
       color: var(--white);
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'MadeTommy', sans-serif;
       font-size: 1rem;
       padding: 14px 18px;
       outline: none;
@@ -208,7 +215,7 @@
       padding: 15px 40px;
       background: var(--red);
       color: var(--white);
-      font-family: 'Oswald', sans-serif;
+      font-family: 'MadeTommy', sans-serif;
       font-weight: 400; font-size: 0.82rem;
       letter-spacing: 3px; text-transform: uppercase;
       border: none; cursor: none;
@@ -237,7 +244,7 @@
       padding: 16px 20px;
       border: 1px solid;
       border-radius: 12px;
-      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-family: 'MadeTommy', sans-serif; font-weight: 200;
       font-size: 0.78rem; letter-spacing: 2px;
     }
     .form-status.success {
@@ -256,10 +263,10 @@
       animation: fadeInRight 0.9s ease 0.5s both;
     }
     .contact-intro {
-      font-size: 1.15rem; line-height: 1.85; font-weight: 300;
+      font-family: 'BabyDoll', sans-serif;
+      font-size: 1.2rem; line-height: 1.9;
       color: rgba(250,245,239,0.65);
       margin-bottom: 48px;
-      font-style: italic;
     }
 
     .contact-channels {
@@ -295,7 +302,7 @@
     }
     .channel-info { flex: 1; }
     .channel-name {
-      font-family: 'Oswald', sans-serif; font-weight: 400;
+      font-family: 'MadeTommy', sans-serif; font-weight: 400;
       font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
       color: var(--red); margin-bottom: 4px;
     }
@@ -311,7 +318,7 @@
     }
 
     .response-note {
-      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-family: 'MadeTommy', sans-serif; font-weight: 200;
       font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
       color: rgba(250,245,239,0.3);
       text-align: center;
@@ -330,7 +337,7 @@
     .footer-bottom {
       max-width: 1100px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-family: 'MadeTommy', sans-serif; font-weight: 200;
       font-size: 0.68rem; letter-spacing: 3px;
       color: rgba(250,245,239,0.25);
     }
