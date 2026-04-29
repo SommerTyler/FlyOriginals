@@ -1206,6 +1206,84 @@
     const h = document.getElementById('hero');
     if (h) h.style.transform = `translateY(${y * 0.22}px)`;
   }, { passive: true });
+
+  // ── INTRO SCREEN ──
+  (function() {
+    const intro = document.getElementById('intro');
+    const fill  = document.getElementById('introFill');
+    if (!intro) return;
+
+    function hideIntro() {
+      intro.classList.add('hidden');
+      document.body.style.overflow      = '';
+      document.body.style.pointerEvents = '';
+    }
+
+    // Sicherheits-Timeout: spätestens nach 2.5s weg egal was
+    const safetyTimer = setTimeout(hideIntro, 2500);
+
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct += Math.random() * 10 + 6;
+      if (pct >= 100) {
+        pct = 100;
+        fill.style.width = '100%';
+        clearInterval(iv);
+        clearTimeout(safetyTimer);
+        setTimeout(hideIntro, 280);
+        return;
+      }
+      fill.style.width = pct + '%';
+    }, 50);
+
+    document.body.style.overflow      = 'hidden';
+    document.body.style.pointerEvents = 'none';
+
+    // Klick überspringt Intro sofort
+    intro.addEventListener('click', () => {
+      clearInterval(iv); clearTimeout(safetyTimer); hideIntro();
+    });
+  })();
+
+  // ── COOKIE BANNER ──
+  function cookieAccept() {
+    localStorage.setItem('cookieConsent', 'accepted');
+    document.getElementById('cookieBanner').classList.remove('visible');
+  }
+  function cookieDecline() {
+    localStorage.setItem('cookieConsent', 'declined');
+    document.getElementById('cookieBanner').classList.remove('visible');
+  }
+  if (!localStorage.getItem('cookieConsent')) {
+    setTimeout(() => document.getElementById('cookieBanner').classList.add('visible'), 2400);
+  }
+
+  // ── MOBILE BOTTOM NAV: aktive Sektion highlighten ──
+  const navItems = document.querySelectorAll('.mobile-nav-item[data-section]');
+  const navSections = [...navItems].map(i => document.getElementById(i.dataset.section)).filter(Boolean);
+  const navObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(i => i.classList.remove('active'));
+        const a = document.querySelector(`.mobile-nav-item[data-section="${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { threshold: 0.4 });
+  navSections.forEach(s => navObs.observe(s));
+
+  // ── SWIPE / TAP für Projektkarten ──
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('touchend', e => {
+      e.preventDefault();
+      const isOpen = card.classList.contains('touch-open');
+      document.querySelectorAll('.project-card.touch-open').forEach(c => c.classList.remove('touch-open'));
+      if (!isOpen) card.classList.add('touch-open');
+    }, { passive: false });
+  });
+  const ts = document.createElement('style');
+  ts.textContent = `.project-card.touch-open .project-card-content{opacity:1!important}.project-card.touch-open .project-card-base{opacity:0!important}.project-card.touch-open{border-color:rgba(204,16,32,.6)!important}`;
+  document.head.appendChild(ts);
 </script>
 
 <!-- Cookie Banner -->
