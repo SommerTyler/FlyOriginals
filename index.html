@@ -4,6 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="FlyOriginals – Ikonische handgefertigte Fliegen-Krawatten. Born Fly. Stay Original.">
+  <meta name="theme-color" content="#CC1020">
+  <!-- Open Graph -->
+  <meta property="og:title" content="FlyOriginals – Born Fly. Stay Original.">
+  <meta property="og:description" content="Ikonische handgefertigte Fliegen-Krawatten. Kreatives Design trifft Handwerk.">
+  <meta property="og:image" content="https://flyoriginals.onrender.com/img_03.png">
+  <meta property="og:url" content="https://flyoriginals.onrender.com">
+  <meta property="og:type" content="website">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@theflyoriginals">
+  <meta name="twitter:title" content="FlyOriginals – Born Fly. Stay Original.">
+  <meta name="twitter:description" content="Ikonische handgefertigte Fliegen-Krawatten.">
+  <meta name="twitter:image" content="https://flyoriginals.onrender.com/img_03.png">
+  <!-- Favicon (SVG Bow Tie) -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>FlyOriginals – Creative Bow Tie Design & Craft</title>
   <link rel="preload" href="img_00.jpg" as="image">
   <link rel="preload" href="img_03.png" as="image">
@@ -658,6 +673,146 @@
       margin-bottom: 16px;
     }}
 
+
+    /* ── INTRO SCREEN ── */
+    #intro {
+      position: fixed; inset: 0; z-index: 99999;
+      background: var(--black);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 32px;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+    #intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .intro-bow {
+      width: clamp(120px, 20vw, 220px);
+      filter: drop-shadow(0 0 30px rgba(204,16,32,0.8));
+      animation: intro-pulse 1.2s ease-in-out infinite alternate;
+    }
+    .intro-bar {
+      width: clamp(180px, 25vw, 300px); height: 2px;
+      background: rgba(204,16,32,0.15);
+      overflow: hidden; position: relative;
+    }
+    .intro-bar-fill {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: linear-gradient(to right, var(--maroon), var(--red));
+      width: 0%;
+      transition: width 0.05s linear;
+    }
+    .intro-text {
+      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-size: 0.68rem; letter-spacing: 8px; text-transform: uppercase;
+      color: rgba(250,245,239,0.3);
+      animation: fadeIn 0.5s ease 0.3s both;
+    }
+    @keyframes intro-pulse {
+      from { filter: drop-shadow(0 0 20px rgba(204,16,32,0.6)); transform: scale(0.97); }
+      to   { filter: drop-shadow(0 0 45px rgba(204,16,32,1)); transform: scale(1.03); }
+    }
+
+    /* ── COOKIE BANNER ── */
+    #cookieBanner {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      z-index: 9990;
+      background: rgba(13,0,5,0.97);
+      border-top: 1px solid rgba(204,16,32,0.25);
+      backdrop-filter: blur(12px);
+      padding: 20px 8%;
+      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+      transform: translateY(100%);
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    #cookieBanner.visible { transform: translateY(0); }
+    .cookie-text {
+      flex: 1; min-width: 260px;
+      font-size: 0.85rem; line-height: 1.6;
+      color: rgba(250,245,239,0.55);
+    }
+    .cookie-text a { color: var(--red); text-decoration: none; }
+    .cookie-text a:hover { text-decoration: underline; }
+    .cookie-actions { display: flex; gap: 12px; flex-shrink: 0; }
+    .cookie-btn {
+      padding: 9px 22px;
+      font-family: 'Oswald', sans-serif; font-weight: 400;
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .cookie-btn-accept {
+      background: var(--red); color: var(--white);
+      clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+    }
+    .cookie-btn-accept:hover { box-shadow: 0 0 20px rgba(204,16,32,0.5); transform: translateY(-1px); }
+    .cookie-btn-decline {
+      background: transparent; color: rgba(250,245,239,0.4);
+      border: 1px solid rgba(250,245,239,0.15);
+    }
+    .cookie-btn-decline:hover { border-color: rgba(250,245,239,0.35); color: var(--white); }
+
+    /* ── MOBILE BOTTOM NAV ── */
+    #mobileNav {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      z-index: 9980;
+      background: rgba(13,0,5,0.97);
+      border-top: 1px solid rgba(204,16,32,0.2);
+      backdrop-filter: blur(16px);
+      padding: 8px 0 env(safe-area-inset-bottom, 8px);
+    }
+    .mobile-nav-inner {
+      display: flex; justify-content: space-around; align-items: center;
+    }
+    .mobile-nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 8px 16px;
+      text-decoration: none;
+      color: rgba(250,245,239,0.35);
+      transition: color 0.25s, transform 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Oswald', sans-serif; font-weight: 200;
+      font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
+    }
+    .mobile-nav-item:active { transform: scale(0.9); }
+    .mobile-nav-item.active, .mobile-nav-item:hover { color: var(--red); }
+    .mobile-nav-icon { width: 20px; height: 20px; }
+
+    /* Touch-Feedback für Cards */
+    @media (hover: none) {
+      .project-card:active { border-color: rgba(204,16,32,0.6); }
+      .project-card:active .project-card-content { opacity: 1; }
+      .project-card:active .project-card-base { opacity: 0; }
+    }
+
+    /* ── MOBILE RESPONSIVE FIXES ── */
+    @media (max-width: 900px) {
+      #mobileNav { display: block; }
+      body { padding-bottom: 65px; }
+      #cookieBanner { padding: 16px 5%; }
+      .projects-grid { grid-template-columns: 1fr 1fr; gap: 3%; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 6% 4%; }
+      .footer-socials-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .projects-grid { grid-template-columns: 1fr; gap: 4%; }
+      .partners-grid { grid-template-columns: 1fr 1fr; gap: 4%; }
+      .about-inner { grid-template-columns: 1fr; gap: 8vh; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .btn-large { width: 100%; justify-content: center; }
+    }
+
+    /* Swipe-Indikator auf Mobile */
+    @media (max-width: 900px) {
+      .project-card-base::after {
+        content: '↕ tippen';
+        position: absolute; top: -22px; right: 12px;
+        font-family: 'Oswald', sans-serif; font-weight: 200;
+        font-size: 0.58rem; letter-spacing: 2px;
+        color: rgba(204,16,32,0.5);
+      }
+    }
+
   </style>
   <!-- Supabase -->
   <script type="module">
@@ -666,6 +821,18 @@
   </script>
 </head>
 <body>
+
+
+<div id="intro">
+  <svg class="intro-bow" viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
+    <path fill="#CC1020" d="M131.55,78.24l48.83,25.33c7.08,3.09,14.78-2.29,15.91-11.15a319.4,319.4,0,0,0,2.48-40.19A317.7,317.7,0,0,0,196.28,12C195.15,3.16,187.48-2.2,180.43.88L131.55,26.22c-4.7,2.05-7.82,7.37-7.82,13.32V64.92C123.73,70.87,126.85,76.19,131.55,78.24Z"/>
+    <path fill="#e03040" d="M88.88,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.17-7.16V36.15A7.17,7.17,0,0,0,88.88,29Z"/>
+    <path fill="#e03040" d="M109.89,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.16-7.16V36.15A7.17,7.17,0,0,0,109.89,29Z"/>
+  </svg>
+  <div class="intro-bar"><div class="intro-bar-fill" id="introFill"></div></div>
+  <div class="intro-text">Born Fly. Stay Original.</div>
+</div>
 
 <div class="cursor" id="cursor">
   <svg viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
@@ -1040,5 +1207,44 @@
     if (h) h.style.transform = `translateY(${y * 0.22}px)`;
   }, { passive: true });
 </script>
+
+<!-- Cookie Banner -->
+<div id="cookieBanner">
+  <p class="cookie-text">
+    Wir verwenden Cookies um die Website-Erfahrung zu verbessern.
+    Mehr dazu in unserer <a href="datenschutz.html">Datenschutzerklärung</a>.
+  </p>
+  <div class="cookie-actions">
+    <button class="cookie-btn cookie-btn-decline" onclick="cookieDecline()">Ablehnen</button>
+    <button class="cookie-btn cookie-btn-accept" onclick="cookieAccept()">Akzeptieren</button>
+  </div>
+</div>
+
+<!-- Mobile Bottom Nav -->
+<nav id="mobileNav">
+  <div class="mobile-nav-inner">
+    <a href="#hero" class="mobile-nav-item active" data-section="hero">
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </a>
+    <a href="#projects" class="mobile-nav-item" data-section="projects">
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Projekte
+    </a>
+    <a href="#partners" class="mobile-nav-item" data-section="partners">
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Partner
+    </a>
+    <a href="#about" class="mobile-nav-item" data-section="about">
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Über uns
+    </a>
+    <a href="kontakt.html" class="mobile-nav-item">
+      <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      Kontakt
+    </a>
+  </div>
+</nav>
+
 </body>
 </html>
