@@ -19,6 +19,10 @@
   <meta name="twitter:image" content="https://flyoriginals.onrender.com/img_03.png">
   <!-- Favicon (SVG Bow Tie) -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="FlyOriginals">
   <title>FlyOriginals – Creative Bow Tie Design & Craft</title>
   <link rel="preload" href="img_00.jpg" as="image">
   <link rel="preload" href="img_03.png" as="image">
@@ -847,14 +851,185 @@
       }
     }
 
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #scrollProgress {
+      position: fixed; top: 0; left: 0; z-index: 9997;
+      height: 3px; width: 0%;
+      background: linear-gradient(to right, var(--maroon), var(--red), #ff6040);
+      border-radius: 0 3px 3px 0;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(204,16,32,0.6);
+    }
+
+    /* ── BACK TO TOP ── */
+    #backToTop {
+      position: fixed; bottom: 32px; right: 32px; z-index: 9985;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(13,0,5,0.92);
+      border: 1px solid rgba(204,16,32,0.4);
+      display: flex; align-items: center; justify-content: center;
+      cursor: none; color: var(--red);
+      opacity: 0; pointer-events: none;
+      transform: translateY(16px) scale(0.8);
+      transition: opacity 0.4s, transform 0.4s, border-color 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(12px);
+    }
+    #backToTop.visible {
+      opacity: 1; pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+    #backToTop:hover {
+      border-color: rgba(204,16,32,0.8);
+      box-shadow: 0 0 20px rgba(204,16,32,0.35);
+      background: rgba(204,16,32,0.15);
+    }
+    #backToTop svg { transition: transform 0.3s; }
+    #backToTop:hover svg { transform: translateY(-2px); }
+
+    /* ── PAGE TRANSITION OVERLAY ── */
+    #pageTransition {
+      position: fixed; inset: 0; z-index: 99990;
+      background: var(--black);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    #pageTransition.leaving { opacity: 1; pointer-events: all; }
+
+    /* ── PARTICLE TRAIL ── */
+    .trail-particle {
+      position: fixed; pointer-events: none; z-index: 9996;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--red);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      animation: trailFade 0.6s ease forwards;
+    }
+    @keyframes trailFade {
+      0%   { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(0.1); }
+    }
+
+    /* ── GLOW PULSE on Hero logo ── */
+    @keyframes logoPulse {
+      0%,100% { filter: drop-shadow(0 0 18px rgba(204,16,32,0.4)); }
+      50%     { filter: drop-shadow(0 0 42px rgba(204,16,32,0.8)) drop-shadow(0 0 80px rgba(204,16,32,0.25)); }
+    }
+    .hero-logo img { animation: logoPulse 4s ease-in-out infinite; }
+
+    /* ── SECTION DIVIDER ── */
+    .section-divider {
+      position: relative; z-index: 10;
+      width: 100%; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(204,16,32,0.25), transparent);
+      margin: 0;
+    }
+    .section-divider::after {
+      content: '✦';
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.7rem; color: rgba(204,16,32,0.5);
+      background: var(--black); padding: 0 12px;
+    }
+
+    /* ── MOBILE: back-to-top above mobile nav ── */
+    @media (max-width: 900px) {
+      #backToTop { bottom: 80px; right: 20px; width: 42px; height: 42px; }
+    }
+
   </style>
-  <!-- Supabase -->
+  <!-- Supabase + Live Content -->
   <script type="module">
     import { supabase } from './supabase.js'
     window.supabase = supabase
+
+    // Load live content from DB and apply to page
+    async function applyLiveContent() {
+      try {
+        const { data } = await supabase.from('site_content').select('key, value')
+        if (!data) return
+        const c = {}
+        data.forEach(r => c[r.key] = r.value)
+
+        // Helper
+        const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val }
+        const setHtml = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML = val }
+
+        // Hero
+        set('live-eyebrow',  c.hero_eyebrow)
+        set('live-subtitle', c.hero_subtitle)
+        setHtml('live-tagline', c.hero_tagline?.replace(/\n/g, '<br>'))
+        set('live-btn1', c.hero_btn1)
+        set('live-btn2', c.hero_btn2)
+
+        // Projects
+        set('live-projects-title', c.projects_title)
+        for (let i = 1; i <= 6; i++) {
+          set(`live-p${i}-title`, c[`project${i}_title`])
+          set(`live-p${i}-year`,  c[`project${i}_year`])
+          set(`live-p${i}-desc`,  c[`project${i}_desc`])
+          // also update the base strip
+          const baseTitle = document.getElementById(`live-p${i}-base-title`)
+          const baseYear  = document.getElementById(`live-p${i}-base-year`)
+          if (baseTitle && c[`project${i}_title`]) baseTitle.textContent = c[`project${i}_title`]
+          if (baseYear  && c[`project${i}_year`])  baseYear.textContent  = c[`project${i}_year`]
+        }
+
+        // Partners
+        set('live-partners-title', c.partners_title)
+        for (let i = 1; i <= 4; i++) {
+          set(`live-partner${i}-name`, c[`partner${i}_name`])
+          set(`live-partner${i}-desc`, c[`partner${i}_desc`])
+        }
+
+        // About
+        if (c.about_title1 || c.about_title2) {
+          const el = document.getElementById('live-about-title')
+          if (el) el.innerHTML = `${c.about_title1 || 'Born Fly'}<br>${c.about_title2 || 'Stay Original'}`
+        }
+        set('live-about-p1', c.about_p1)
+        set('live-about-p2', c.about_p2)
+
+        // Stats
+        const statTargets = document.querySelectorAll('.counter')
+        const statData = [c.stat1_num, c.stat2_num, c.stat3_num, c.stat4_num]
+        const statLabels = [c.stat1_label, c.stat2_label, c.stat3_label, c.stat4_label]
+        statTargets.forEach((el, i) => { if (statData[i]) el.dataset.target = statData[i] })
+        document.querySelectorAll('.stat-label').forEach((el, i) => { if (statLabels[i]) el.textContent = statLabels[i] })
+
+        // Logo
+        if (c.img_logo) {
+          document.querySelectorAll('.hero-logo img, .footer-logo-section img').forEach(img => img.src = c.img_logo)
+        }
+
+        // Project images
+        for (let i = 1; i <= 6; i++) {
+          if (c[`img_project${i}`]) {
+            const bg = document.getElementById(`live-p${i}-bg`)
+            if (bg) bg.style.backgroundImage = `url('${c[`img_project${i}`]}')`
+          }
+        }
+      } catch(e) { console.warn('Live content unavailable:', e) }
+    }
+
+    // Run after DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applyLiveContent)
+    } else {
+      applyLiveContent()
+    }
   </script>
 </head>
 <body>
+
+
+<div id="scrollProgress"></div>
+<div id="pageTransition"></div>
+
+<button id="backToTop" aria-label="Nach oben" title="Nach oben">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
 
 
 <div id="intro">
@@ -892,22 +1067,19 @@
 <section id="hero">
   <div id="floatingBows" aria-hidden="true" style="position:absolute;inset:0;overflow:hidden;pointer-events:none"></div>
 
-  <p class="hero-eyebrow">✦ Handwerk trifft Design ✦</p>
+  <p class="hero-eyebrow" id="live-eyebrow">✦ Handwerk trifft Design ✦</p>
 
   <div class="hero-logo">
     <img src="img_03.png" alt="FLYORIGINALS">
   </div>
 
-  <p class="hero-subtitle">Meisterhafte Krawatten-Designs</p>
+  <p class="hero-subtitle" id="live-subtitle">Meisterhafte Krawatten-Designs</p>
 
-  <p class="hero-tagline">
-    Wir erschaffen ikonische Fliegen-Krawatten,<br>
-    die Geschichten erzählen und Charaktere definieren.
-  </p>
+  <p class="hero-tagline" id="live-tagline">Wir erschaffen ikonische Fliegen-Krawatten,<br>die Geschichten erzählen und Charaktere definieren.</p>
 
   <div class="hero-actions">
-    <a href="#projects" class="btn btn-large">Unsere Projekte</a>
-    <a href="#partners" class="btn btn-outline btn-large">Entdecke Partner</a>
+    <a href="#projects" class="btn btn-large"><span id="live-btn1">Unsere Projekte</span></a>
+    <a href="#partners" class="btn btn-outline btn-large"><span id="live-btn2">Entdecke Partner</span></a>
   </div>
 
   <div class="hero-scroll">
@@ -916,12 +1088,13 @@
   </div>
 </section>
 
+<div class="section-divider"></div>
 <!-- ═══ PROJECTS ═══ -->
 <section id="projects">
   <div>
     <div class="reveal">
       <p class="section-label">– Portfolio</p>
-      <h2 class="section-title">Unsere Projekte</h2>
+      <h2 class="section-title" id="live-projects-title">Unsere Projekte</h2>
     </div>
   </div>
   <div class="projects-grid">
@@ -929,14 +1102,14 @@
       <div class="project-card-glow"></div>
       <div class="project-card-bg"><div class="project-card-emoji">🎀</div></div>
       <div class="project-card-base">
-        <div class="project-title">Classic Collection</div>
-        <div class="project-year-badge">2024</div>
+        <div class="project-title" id="live-p1-base-title">Classic Collection</div>
+        <div class="project-year-badge" id="live-p1-base-year">2024</div>
       </div>
       <div class="project-card-content">
         <div class="project-content-emoji">🎀</div>
-        <div class="project-content-year">2024</div>
-        <div class="project-content-title">Classic Collection</div>
-        <div class="project-content-desc">Zeitlose Designs für elegante Anlässe</div>
+        <div class="project-content-year" id="live-p1-year">2024</div>
+        <div class="project-content-title" id="live-p1-title">Classic Collection</div>
+        <div class="project-content-desc" id="live-p1-desc">Zeitlose Designs für elegante Anlässe</div>
         <div class="project-content-line"></div>
       </div>
     </div>
@@ -944,14 +1117,14 @@
       <div class="project-card-glow"></div>
       <div class="project-card-bg"><div class="project-card-emoji">🖤</div></div>
       <div class="project-card-base">
-        <div class="project-title">Velvet Series</div>
-        <div class="project-year-badge">2024</div>
+        <div class="project-title" id="live-p2-base-title">Velvet Series</div>
+        <div class="project-year-badge" id="live-p2-base-year">2024</div>
       </div>
       <div class="project-card-content">
         <div class="project-content-emoji">🖤</div>
-        <div class="project-content-year">2024</div>
-        <div class="project-content-title">Velvet Series</div>
-        <div class="project-content-desc">Luxusvolle Seidenmischungen in edlen Farben</div>
+        <div class="project-content-year" id="live-p2-year">2024</div>
+        <div class="project-content-title" id="live-p2-title">Velvet Series</div>
+        <div class="project-content-desc" id="live-p2-desc">Luxusvolle Seidenmischungen in edlen Farben</div>
         <div class="project-content-line"></div>
       </div>
     </div>
@@ -959,14 +1132,14 @@
       <div class="project-card-glow"></div>
       <div class="project-card-bg"><div class="project-card-emoji">✨</div></div>
       <div class="project-card-base">
-        <div class="project-title">Golden Edition</div>
-        <div class="project-year-badge">2023</div>
+        <div class="project-title" id="live-p3-base-title">Golden Edition</div>
+        <div class="project-year-badge" id="live-p3-base-year">2023</div>
       </div>
       <div class="project-card-content">
         <div class="project-content-emoji">✨</div>
-        <div class="project-content-year">2023</div>
-        <div class="project-content-title">Golden Edition</div>
-        <div class="project-content-desc">Exklusiv limitierte Sammleredition</div>
+        <div class="project-content-year" id="live-p3-year">2023</div>
+        <div class="project-content-title" id="live-p3-title">Golden Edition</div>
+        <div class="project-content-desc" id="live-p3-desc">Exklusiv limitierte Sammleredition</div>
         <div class="project-content-line"></div>
       </div>
     </div>
@@ -974,14 +1147,14 @@
       <div class="project-card-glow"></div>
       <div class="project-card-bg"><div class="project-card-emoji">🌹</div></div>
       <div class="project-card-base">
-        <div class="project-title">Heritage Line</div>
-        <div class="project-year-badge">2023</div>
+        <div class="project-title" id="live-p4-base-title">Heritage Line</div>
+        <div class="project-year-badge" id="live-p4-base-year">2023</div>
       </div>
       <div class="project-card-content">
         <div class="project-content-emoji">🌹</div>
-        <div class="project-content-year">2023</div>
-        <div class="project-content-title">Heritage Line</div>
-        <div class="project-content-desc">Klassische Rot-Schwarze Kombinationen</div>
+        <div class="project-content-year" id="live-p4-year">2023</div>
+        <div class="project-content-title" id="live-p4-title">Heritage Line</div>
+        <div class="project-content-desc" id="live-p4-desc">Klassische Rot-Schwarze Kombinationen</div>
         <div class="project-content-line"></div>
       </div>
     </div>
@@ -989,14 +1162,14 @@
       <div class="project-card-glow"></div>
       <div class="project-card-bg"><div class="project-card-emoji">🎭</div></div>
       <div class="project-card-base">
-        <div class="project-title">Statement Pieces</div>
-        <div class="project-year-badge">2023</div>
+        <div class="project-title" id="live-p5-base-title">Statement Pieces</div>
+        <div class="project-year-badge" id="live-p5-base-year">2023</div>
       </div>
       <div class="project-card-content">
         <div class="project-content-emoji">🎭</div>
-        <div class="project-content-year">2023</div>
-        <div class="project-content-title">Statement Pieces</div>
-        <div class="project-content-desc">Bold & provocative designs für Trendsetter</div>
+        <div class="project-content-year" id="live-p5-year">2023</div>
+        <div class="project-content-title" id="live-p5-title">Statement Pieces</div>
+        <div class="project-content-desc" id="live-p5-desc">Bold & provocative designs für Trendsetter</div>
         <div class="project-content-line"></div>
       </div>
     </div>
@@ -1004,20 +1177,21 @@
       <div class="project-card-glow"></div>
       <div class="project-card-bg"><div class="project-card-emoji">🔴</div></div>
       <div class="project-card-base">
-        <div class="project-title">Debut Campaign</div>
-        <div class="project-year-badge">2022</div>
+        <div class="project-title" id="live-p6-base-title">Debut Campaign</div>
+        <div class="project-year-badge" id="live-p6-base-year">2022</div>
       </div>
       <div class="project-card-content">
         <div class="project-content-emoji">🔴</div>
-        <div class="project-content-year">2022</div>
-        <div class="project-content-title">Debut Campaign</div>
-        <div class="project-content-desc">Die Gründungskollektion, die alles begann</div>
+        <div class="project-content-year" id="live-p6-year">2022</div>
+        <div class="project-content-title" id="live-p6-title">Debut Campaign</div>
+        <div class="project-content-desc" id="live-p6-desc">Die Gründungskollektion, die alles begann</div>
         <div class="project-content-line"></div>
       </div>
     </div>
   </div>
 </section>
 
+<div class="section-divider"></div>
 <!-- ═══ PARTNERS ═══ -->
 <section id="partners" class="section section-parchment">
   <div class="partners-inner">
@@ -1028,36 +1202,37 @@
     <div class="partners-grid">
       <div class="partner-item reveal" style="transition-delay:0.1s">
         <div class="partner-logo">🏛️</div>
-        <div class="partner-name">Luxury Brands</div>
-        <div class="partner-desc">Exklusive Kollaborationen mit führenden Designlabels</div>
+        <div class="partner-name" id="live-partner1-name">Luxury Brands</div>
+        <div class="partner-desc" id="live-partner1-desc">Exklusive Kollaborationen mit führenden Designlabels</div>
       </div>
       <div class="partner-item reveal" style="transition-delay:0.2s">
         <div class="partner-logo">👔</div>
-        <div class="partner-name">Fashion Houses</div>
-        <div class="partner-desc">Partnerschaft mit internationalen Mode-Größen</div>
+        <div class="partner-name" id="live-partner2-name">Fashion Houses</div>
+        <div class="partner-desc" id="live-partner2-desc">Partnerschaft mit internationalen Mode-Größen</div>
       </div>
       <div class="partner-item reveal" style="transition-delay:0.3s">
         <div class="partner-logo">🎨</div>
-        <div class="partner-name">Design Studios</div>
-        <div class="partner-desc">Kreative Zusammenarbeit mit talentierten Künstlern</div>
+        <div class="partner-name" id="live-partner3-name">Design Studios</div>
+        <div class="partner-desc" id="live-partner3-desc">Kreative Zusammenarbeit mit talentierten Künstlern</div>
       </div>
       <div class="partner-item reveal" style="transition-delay:0.4s">
         <div class="partner-logo">🌍</div>
-        <div class="partner-name">Global Retailers</div>
-        <div class="partner-desc">Distribution in über 20 Ländern weltweit</div>
+        <div class="partner-name" id="live-partner4-name">Global Retailers</div>
+        <div class="partner-desc" id="live-partner4-desc">Distribution in über 20 Ländern weltweit</div>
       </div>
     </div>
   </div>
 </section>
 
+<div class="section-divider"></div>
 <!-- ═══ ABOUT ═══ -->
 <section id="about">
   <div class="about-inner">
     <div class="about-text reveal-left">
       <p class="section-label">– Unsere Geschichte</p>
-      <h2 class="section-title">Born Fly<br>Stay Original</h2>
-      <p>FlyOriginals ist mehr als ein Accessoire-Label – es ist eine Philosophie. Mit jeder handgefertigten Krawatte erzählen wir Geschichten von Leidenschaft, Handwerk und unbegrenzter Kreativität.</p>
-      <p>Seit über einem Jahrzehnt arbeiten wir mit den besten Materialien und den talentiertesten Designern zusammen, um Fliegen-Krawatten zu schaffen, die wirklich einzigartig sind.</p>
+      <h2 class="section-title" id="live-about-title">Born Fly<br>Stay Original</h2>
+      <p id="live-about-p1">FlyOriginals ist mehr als ein Accessoire-Label – es ist eine Philosophie. Mit jeder handgefertigten Krawatte erzählen wir Geschichten von Leidenschaft, Handwerk und unbegrenzter Kreativität.</p>
+      <p id="live-about-p2">Seit über einem Jahrzehnt arbeiten wir mit den besten Materialien und den talentiertesten Designern zusammen, um Fliegen-Krawatten zu schaffen, die wirklich einzigartig sind.</p>
     </div>
     <div class="about-stats reveal-right">
       <div class="stat-item">
@@ -1080,6 +1255,7 @@
   </div>
 </section>
 
+<div class="section-divider"></div>
 <!-- ═══ FOOTER ═══ -->
 <footer>
   <div class="footer-inner">
@@ -1318,6 +1494,60 @@
   const ts = document.createElement('style');
   ts.textContent = `.project-card.touch-open .project-card-content{opacity:1!important}.project-card.touch-open .project-card-base{opacity:0!important}.project-card.touch-open{border-color:rgba(204,16,32,.6)!important}`;
   document.head.appendChild(ts);
+
+  // ── SCROLL PROGRESS BAR ──
+  const progressBar = document.getElementById('scrollProgress');
+  const btt = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (progressBar) progressBar.style.width = (scrolled / maxScroll * 100) + '%';
+    if (btt) btt.classList.toggle('visible', scrolled > 400);
+  }, { passive: true });
+
+  // ── BACK TO TOP ──
+  if (btt) {
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    btt.addEventListener('mouseenter', () => { cursor.classList.add('hovered'); ring.classList.add('hovered'); });
+    btt.addEventListener('mouseleave', () => { cursor.classList.remove('hovered'); ring.classList.remove('hovered'); });
+  }
+
+  // ── PAGE TRANSITIONS ──
+  const overlay = document.getElementById('pageTransition');
+  if (overlay) {
+    // Fade in on arrival
+    overlay.style.opacity = '1';
+    overlay.style.transition = 'none';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      overlay.style.transition = 'opacity 0.4s ease';
+      overlay.style.opacity = '0';
+    }));
+    // Fade out on leave
+    document.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && href.endsWith('.html')) {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          overlay.style.opacity = '1';
+          overlay.style.pointerEvents = 'all';
+          setTimeout(() => { window.location.href = href; }, 380);
+        });
+      }
+    });
+  }
+
+  // ── CURSOR PARTICLE TRAIL ──
+  let lastTrail = 0;
+  document.addEventListener('mousemove', e => {
+    const now = Date.now();
+    if (now - lastTrail < 90) return;
+    lastTrail = now;
+    const p = document.createElement('div');
+    p.className = 'trail-particle';
+    p.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${Math.random()*3+2}px;height:${Math.random()*3+2}px;`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 620);
+  });
 </script>
 
 <!-- Cookie Banner -->

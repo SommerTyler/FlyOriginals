@@ -6,6 +6,7 @@
   <meta name="description" content="FlyOriginals – Datenschutz">
   <title>Datenschutz – FlyOriginals</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
   <link rel="preload" href="img_00.jpg" as="image">
   <link rel="preload" href="img_03.png" as="image">
   <style>
@@ -14,6 +15,12 @@
     @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-medium.otf') format('opentype'); font-weight: 500; font-display: swap; }
     @font-face { font-family: 'MadeTommy'; src: url('fonts/made-tommy-bold.otf') format('opentype'); font-weight: 700; font-display: swap; }
     @font-face { font-family: 'BabyDoll'; src: url('fonts/baby-doll.otf') format('opentype'); font-weight: 400; font-display: swap; }
+
+    #scrollProgress { position:fixed;top:0;left:0;z-index:9997;height:3px;width:0%;background:linear-gradient(to right,#3B0010,#CC1020);border-radius:0 3px 3px 0;box-shadow:0 0 8px rgba(204,16,32,.6);transition:width .1s linear; }
+    #pageTransition { position:fixed;inset:0;z-index:99990;background:#0d0005;pointer-events:none;opacity:0;transition:opacity .35s ease; }
+    .trail-particle { position:fixed;pointer-events:none;z-index:9996;border-radius:50%;background:#CC1020;transform:translate(-50%,-50%);animation:trailFade .6s ease forwards; }
+    @keyframes trailFade { 0%{opacity:.6;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.1)} }
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
@@ -162,10 +169,18 @@
       .container { padding: 80px 5% 80px; }
       .footer-bottom { flex-direction: column; align-items: flex-start; }
     }
+
+    #scrollProgress { position:fixed;top:0;left:0;z-index:9997;height:3px;width:0%;background:linear-gradient(to right,#3B0010,#CC1020);border-radius:0 3px 3px 0;box-shadow:0 0 8px rgba(204,16,32,.6);transition:width .1s linear; }
+    #pageTransition { position:fixed;inset:0;z-index:99990;background:#0d0005;pointer-events:none;opacity:0;transition:opacity .35s ease; }
+    .trail-particle { position:fixed;pointer-events:none;z-index:9996;border-radius:50%;background:#CC1020;transform:translate(-50%,-50%);animation:trailFade .6s ease forwards; }
+    @keyframes trailFade { 0%{opacity:.6;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.1)} }
+
   </style>
 </head>
 <body>
 
+<div id="scrollProgress"></div>
+<div id="pageTransition"></div>
 <div class="cursor" id="cursor">
   <svg viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
     <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
@@ -276,6 +291,39 @@ E-Mail: hello@flyoriginals.de</p>
     });
   }, { threshold: 0.15 });
   document.querySelectorAll('h3, h4').forEach(el => io.observe(el));
+
+  // Scroll progress
+  const _pb = document.getElementById('scrollProgress');
+  window.addEventListener('scroll', () => {
+    const s = window.scrollY, m = document.documentElement.scrollHeight - window.innerHeight;
+    if (_pb && m > 0) _pb.style.width = (s/m*100)+'%';
+  }, { passive: true });
+  // Page transition
+  const _ov = document.getElementById('pageTransition');
+  if (_ov) {
+    _ov.style.cssText = 'opacity:1;transition:none';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      _ov.style.cssText = 'opacity:0;transition:opacity .4s ease';
+    }));
+    document.querySelectorAll('a[href]').forEach(l => {
+      const h = l.getAttribute('href');
+      if (h && !h.startsWith('#') && h.endsWith('.html')) {
+        l.addEventListener('click', e => {
+          e.preventDefault();
+          _ov.style.cssText = 'opacity:1;pointer-events:all;transition:opacity .35s ease';
+          setTimeout(() => window.location.href = h, 370);
+        });
+      }
+    });
+  }
+  // Cursor trail
+  let _lt = 0;
+  document.addEventListener('mousemove', e => {
+    const now = Date.now(); if (now - _lt < 90) return; _lt = now;
+    const p = document.createElement('div'); p.className = 'trail-particle';
+    p.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${Math.random()*3+2}px;height:${Math.random()*3+2}px;`;
+    document.body.appendChild(p); setTimeout(() => p.remove(), 620);
+  });
 </script>
 </body>
 </html>

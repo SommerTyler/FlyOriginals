@@ -1,0 +1,20 @@
+{
+  "name": "FlyOriginals",
+  "short_name": "FlyOriginals",
+  "description": "Ikonische handgefertigte Fliegen-Krawatten. Born Fly. Stay Original.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0005",
+  "theme_color": "#CC1020",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "fashion"],
+  "lang": "de"
+}
