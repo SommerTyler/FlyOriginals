@@ -56,14 +56,14 @@
     /* CURSOR */
     .cursor {
       position: fixed; top: 0; left: 0; width: 36px; height: 21px;
-      pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+      pointer-events: none; z-index: 99995; transform: translate(-50%, -50%);
       filter: drop-shadow(0 0 6px rgba(204,16,32,0.7));
       animation: bow-breathe 3s ease-in-out infinite;
     }
     .cursor-ring {
       position: fixed; top: 0; left: 0; width: 56px; height: 56px;
       border: 1px solid rgba(204,16,32,0.3); border-radius: 50%;
-      pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+      pointer-events: none; z-index: 99994; transform: translate(-50%, -50%);
       transition: width 0.35s cubic-bezier(0.34,1.56,0.64,1), height 0.35s cubic-bezier(0.34,1.56,0.64,1);
     }
     .cursor.hovered {
@@ -340,37 +340,67 @@ E-Mail: hello@flyoriginals.de</p>
     if (_spb && m > 0) _spb.style.width = (s/m*100)+'%';
   }, { passive: true });
 
-  // Page Transition
-  const _ov = document.getElementById('pageTransition');
-  const _pf = document.getElementById('pt-fill');
-  function _transIn() {
-    if (!_ov) return;
-    _ov.classList.add('active');
-    if (_pf) _pf.style.width = '100%';
-    setTimeout(() => {
-      _ov.style.transition = 'opacity .45s ease';
-      _ov.style.opacity = '0';
-      setTimeout(() => { _ov.classList.remove('active'); _ov.style.cssText=''; if(_pf)_pf.style.width='0%'; }, 460);
-    }, 100);
-  }
-  function _transOut(href) {
-    if (!_ov) return;
-    _ov.classList.add('active');
-    if (_pf) _pf.style.width = '0%';
-    let p = 0;
-    const iv = setInterval(() => {
-      p += Math.random()*12+8;
-      if (p >= 100) { p=100; clearInterval(iv); setTimeout(()=>window.location.href=href, 110); }
-      if (_pf) _pf.style.width = p + '%';
-    }, 55);
-  }
-  _transIn();
-  document.querySelectorAll('a[href]').forEach(l => {
-    const h = l.getAttribute('href');
-    if (h && !h.startsWith('#') && h.endsWith('.html')) {
-      l.addEventListener('click', e => { e.preventDefault(); _transOut(h); });
+
+  // ── PAGE TRANSITION ──
+  (function() {
+    const ov = document.getElementById('pageTransition');
+    const pf = document.getElementById('pt-fill');
+    if (!ov) return;
+
+    function hideOverlay() {
+      ov.style.transition = 'opacity .45s ease';
+      ov.style.opacity = '0';
+      ov.style.pointerEvents = 'none';
+      setTimeout(() => {
+        ov.classList.remove('active');
+        ov.style.cssText = '';
+        if (pf) pf.style.width = '0%';
+      }, 460);
     }
-  });
+
+    function transIn() {
+      // Force reset first (handles bfcache back navigation)
+      ov.style.cssText = 'opacity:1;pointer-events:all;transition:none';
+      ov.classList.add('active');
+      if (pf) pf.style.width = '100%';
+      setTimeout(hideOverlay, 150);
+    }
+
+    function transOut(href) {
+      ov.style.cssText = 'opacity:1;pointer-events:all;transition:none';
+      ov.classList.add('active');
+      if (pf) pf.style.width = '0%';
+      let p = 0;
+      const iv = setInterval(() => {
+        p += Math.random() * 12 + 8;
+        if (p >= 100) {
+          p = 100; clearInterval(iv);
+          if (pf) pf.style.width = '100%';
+          setTimeout(() => window.location.href = href, 120);
+          return;
+        }
+        if (pf) pf.style.width = p + '%';
+      }, 55);
+    }
+
+    // Run on every page show (including bfcache back navigation)
+    window.addEventListener('pageshow', (e) => {
+      transIn();
+    });
+
+    // Intercept all .html link clicks
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('javascript') && href.endsWith('.html')) {
+        e.preventDefault();
+        transOut(href);
+      }
+    });
+  })();
+
+
   // Cursor trail
   let _lt2 = 0;
   document.addEventListener('mousemove', e => {

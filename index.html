@@ -59,7 +59,7 @@
     .cursor {
       position: fixed; top: 0; left: 0;
       width: 36px; height: 20px;
-      pointer-events: none; z-index: 9999;
+      pointer-events: none; z-index: 99995;
       transform: translate(-50%, -50%);
       transition: width 0.25s cubic-bezier(0.34,1.56,0.64,1),
                   height 0.25s cubic-bezier(0.34,1.56,0.64,1),
@@ -1574,50 +1574,66 @@
     btt.addEventListener('mouseleave', () => { cursor.classList.remove('hovered'); ring.classList.remove('hovered'); });
   }
 
-  // ── PAGE TRANSITIONS ──
-  const overlay = document.getElementById('pageTransition');
-  const ptFill  = document.getElementById('pt-fill');
 
-  function runTransitionOut(href) {
-    overlay.classList.add('active');
-    let pct = 0;
-    const iv = setInterval(() => {
-      pct += Math.random() * 12 + 8;
-      if (pct >= 100) { pct = 100; clearInterval(iv); setTimeout(() => { window.location.href = href; }, 120); }
-      if (ptFill) ptFill.style.width = pct + '%';
-    }, 55);
-  }
+  // ── PAGE TRANSITION ──
+  (function() {
+    const ov = document.getElementById('pageTransition');
+    const pf = document.getElementById('pt-fill');
+    if (!ov) return;
 
-  function runTransitionIn() {
-    if (!overlay) return;
-    overlay.classList.add('active');
-    if (ptFill) ptFill.style.width = '100%';
-    // Short pause then fade out
-    setTimeout(() => {
-      overlay.style.transition = 'opacity 0.45s ease';
-      overlay.style.opacity = '0';
+    function hideOverlay() {
+      ov.style.transition = 'opacity .45s ease';
+      ov.style.opacity = '0';
+      ov.style.pointerEvents = 'none';
       setTimeout(() => {
-        overlay.classList.remove('active');
-        overlay.style.opacity = '';
-        overlay.style.transition = '';
-        if (ptFill) ptFill.style.width = '0%';
+        ov.classList.remove('active');
+        ov.style.cssText = '';
+        if (pf) pf.style.width = '0%';
       }, 460);
-    }, 120);
-  }
+    }
 
-  if (overlay) {
-    runTransitionIn();
-    document.querySelectorAll('a[href]').forEach(link => {
+    function transIn() {
+      // Force reset first (handles bfcache back navigation)
+      ov.style.cssText = 'opacity:1;pointer-events:all;transition:none';
+      ov.classList.add('active');
+      if (pf) pf.style.width = '100%';
+      setTimeout(hideOverlay, 150);
+    }
+
+    function transOut(href) {
+      ov.style.cssText = 'opacity:1;pointer-events:all;transition:none';
+      ov.classList.add('active');
+      if (pf) pf.style.width = '0%';
+      let p = 0;
+      const iv = setInterval(() => {
+        p += Math.random() * 12 + 8;
+        if (p >= 100) {
+          p = 100; clearInterval(iv);
+          if (pf) pf.style.width = '100%';
+          setTimeout(() => window.location.href = href, 120);
+          return;
+        }
+        if (pf) pf.style.width = p + '%';
+      }, 55);
+    }
+
+    // Run on every page show (including bfcache back navigation)
+    window.addEventListener('pageshow', (e) => {
+      transIn();
+    });
+
+    // Intercept all .html link clicks
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href]');
+      if (!link) return;
       const href = link.getAttribute('href');
-      if (href && !href.startsWith('#') && href.endsWith('.html')) {
-        link.addEventListener('click', e => {
-          e.preventDefault();
-          if (ptFill) ptFill.style.width = '0%';
-          runTransitionOut(href);
-        });
+      if (href && !href.startsWith('#') && !href.startsWith('javascript') && href.endsWith('.html')) {
+        e.preventDefault();
+        transOut(href);
       }
     });
-  }
+  })();
+
 
   // ── CURSOR PARTICLE TRAIL ──
   let lastTrail = 0;
