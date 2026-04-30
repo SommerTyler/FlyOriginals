@@ -17,9 +17,25 @@
     @font-face { font-family: 'BabyDoll'; src: url('fonts/baby-doll.otf') format('opentype'); font-weight: 400; font-display: swap; }
 
     #scrollProgress { position:fixed;top:0;left:0;z-index:9997;height:3px;width:0%;background:linear-gradient(to right,#3B0010,#CC1020);border-radius:0 3px 3px 0;box-shadow:0 0 8px rgba(204,16,32,.6);transition:width .1s linear; }
-    #pageTransition { position:fixed;inset:0;z-index:99990;background:#0d0005;pointer-events:none;opacity:0;transition:opacity .35s ease; }
+    #pageTransition {
+      position:fixed;inset:0;z-index:99990;background:#0d0005;
+      pointer-events:none;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:32px;
+      opacity:0;transition:opacity .3s ease;
+    }
+    #pageTransition.active { opacity:1; pointer-events:all; }
+    #pt-logo { width:clamp(100px,20vw,180px); }
+    #pageTransition.active #pt-logo { animation:pt-glow .9s ease-in-out infinite alternate; }
+    @keyframes pt-glow {
+      from { filter:drop-shadow(0 0 10px rgba(204,16,32,.5)); transform:scale(.97); }
+      to   { filter:drop-shadow(0 0 38px rgba(204,16,32,1)) drop-shadow(0 0 70px rgba(204,16,32,.3)); transform:scale(1.04); }
+    }
+    #pt-track { width:clamp(140px,24vw,260px);height:3px;background:rgba(204,16,32,.12);border-radius:3px;overflow:hidden;position:relative; }
+    #pt-fill { position:absolute;top:0;left:0;bottom:0;width:0%;background:linear-gradient(to right,#3B0010,#CC1020,#ff5040);border-radius:3px;box-shadow:0 0 8px rgba(204,16,32,.7);transition:width .06s linear; }
+    #pt-label { font-family:'MadeTommy',sans-serif;font-weight:300;font-size:.6rem;letter-spacing:7px;text-transform:uppercase;color:rgba(250,245,239,.22);margin-top:-14px; }
     .trail-particle { position:fixed;pointer-events:none;z-index:9996;border-radius:50%;background:#CC1020;transform:translate(-50%,-50%);animation:trailFade .6s ease forwards; }
     @keyframes trailFade { 0%{opacity:.6;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.1)} }
+100%{opacity:0;transform:translate(-50%,-50%) scale(.1)} }
 
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -171,16 +187,41 @@
     }
 
     #scrollProgress { position:fixed;top:0;left:0;z-index:9997;height:3px;width:0%;background:linear-gradient(to right,#3B0010,#CC1020);border-radius:0 3px 3px 0;box-shadow:0 0 8px rgba(204,16,32,.6);transition:width .1s linear; }
-    #pageTransition { position:fixed;inset:0;z-index:99990;background:#0d0005;pointer-events:none;opacity:0;transition:opacity .35s ease; }
+    #pageTransition {
+      position:fixed;inset:0;z-index:99990;background:#0d0005;
+      pointer-events:none;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:32px;
+      opacity:0;transition:opacity .3s ease;
+    }
+    #pageTransition.active { opacity:1; pointer-events:all; }
+    #pt-logo { width:clamp(100px,20vw,180px); }
+    #pageTransition.active #pt-logo { animation:pt-glow .9s ease-in-out infinite alternate; }
+    @keyframes pt-glow {
+      from { filter:drop-shadow(0 0 10px rgba(204,16,32,.5)); transform:scale(.97); }
+      to   { filter:drop-shadow(0 0 38px rgba(204,16,32,1)) drop-shadow(0 0 70px rgba(204,16,32,.3)); transform:scale(1.04); }
+    }
+    #pt-track { width:clamp(140px,24vw,260px);height:3px;background:rgba(204,16,32,.12);border-radius:3px;overflow:hidden;position:relative; }
+    #pt-fill { position:absolute;top:0;left:0;bottom:0;width:0%;background:linear-gradient(to right,#3B0010,#CC1020,#ff5040);border-radius:3px;box-shadow:0 0 8px rgba(204,16,32,.7);transition:width .06s linear; }
+    #pt-label { font-family:'MadeTommy',sans-serif;font-weight:300;font-size:.6rem;letter-spacing:7px;text-transform:uppercase;color:rgba(250,245,239,.22);margin-top:-14px; }
     .trail-particle { position:fixed;pointer-events:none;z-index:9996;border-radius:50%;background:#CC1020;transform:translate(-50%,-50%);animation:trailFade .6s ease forwards; }
     @keyframes trailFade { 0%{opacity:.6;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.1)} }
+100%{opacity:0;transform:translate(-50%,-50%) scale(.1)} }
 
   </style>
 </head>
 <body>
 
 <div id="scrollProgress"></div>
-<div id="pageTransition"></div>
+<div id="pageTransition">
+  <svg id="pt-logo" viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
+    <path fill="#CC1020" d="M131.55,78.24l48.83,25.33c7.08,3.09,14.78-2.29,15.91-11.15a319.4,319.4,0,0,0,2.48-40.19A317.7,317.7,0,0,0,196.28,12C195.15,3.16,187.48-2.2,180.43.88L131.55,26.22c-4.7,2.05-7.82,7.37-7.82,13.32V64.92C123.73,70.87,126.85,76.19,131.55,78.24Z"/>
+    <path fill="#e03040" d="M88.88,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.17-7.16V36.15A7.17,7.17,0,0,0,88.88,29Z"/>
+    <path fill="#e03040" d="M109.89,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.16-7.16V36.15A7.17,7.17,0,0,0,109.89,29Z"/>
+  </svg>
+  <div id="pt-track"><div id="pt-fill"></div></div>
+  <div id="pt-label">Born Fly. Stay Original.</div>
+</div>
 <div class="cursor" id="cursor">
   <svg viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
     <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
@@ -291,11 +332,51 @@ Vertreten durch den Geschäftsführer [Name]</p>
   document.querySelectorAll('h3, h4').forEach(el => io.observe(el));
 
   // Scroll progress
-  const _pb = document.getElementById('scrollProgress');
+  const _spb = document.getElementById('scrollProgress');
   window.addEventListener('scroll', () => {
     const s = window.scrollY, m = document.documentElement.scrollHeight - window.innerHeight;
-    if (_pb && m > 0) _pb.style.width = (s/m*100)+'%';
+    if (_spb && m > 0) _spb.style.width = (s/m*100)+'%';
   }, { passive: true });
+
+  // Page Transition
+  const _ov = document.getElementById('pageTransition');
+  const _pf = document.getElementById('pt-fill');
+  function _transIn() {
+    if (!_ov) return;
+    _ov.classList.add('active');
+    if (_pf) _pf.style.width = '100%';
+    setTimeout(() => {
+      _ov.style.transition = 'opacity .45s ease';
+      _ov.style.opacity = '0';
+      setTimeout(() => { _ov.classList.remove('active'); _ov.style.cssText=''; if(_pf)_pf.style.width='0%'; }, 460);
+    }, 100);
+  }
+  function _transOut(href) {
+    if (!_ov) return;
+    _ov.classList.add('active');
+    if (_pf) _pf.style.width = '0%';
+    let p = 0;
+    const iv = setInterval(() => {
+      p += Math.random()*12+8;
+      if (p >= 100) { p=100; clearInterval(iv); setTimeout(()=>window.location.href=href, 110); }
+      if (_pf) _pf.style.width = p + '%';
+    }, 55);
+  }
+  _transIn();
+  document.querySelectorAll('a[href]').forEach(l => {
+    const h = l.getAttribute('href');
+    if (h && !h.startsWith('#') && h.endsWith('.html')) {
+      l.addEventListener('click', e => { e.preventDefault(); _transOut(h); });
+    }
+  });
+  // Cursor trail
+  let _lt2 = 0;
+  document.addEventListener('mousemove', e => {
+    const now = Date.now(); if (now-_lt2<90) return; _lt2=now;
+    const p=document.createElement('div'); p.className='trail-particle';
+    p.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;width:${Math.random()*3+2}px;height:${Math.random()*3+2}px;`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),620);
+  });
   // Page transition
   const _ov = document.getElementById('pageTransition');
   if (_ov) {

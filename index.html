@@ -892,10 +892,63 @@
       position: fixed; inset: 0; z-index: 99990;
       background: var(--black);
       pointer-events: none;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 36px;
       opacity: 0;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.3s ease;
     }
-    #pageTransition.leaving { opacity: 1; pointer-events: all; }
+    #pageTransition.active { opacity: 1; pointer-events: all; }
+
+    /* Logo in transition */
+    #pt-logo {
+      width: clamp(120px, 22vw, 200px);
+      filter: drop-shadow(0 0 0px rgba(204,16,32,0));
+      animation: none;
+    }
+    #pageTransition.active #pt-logo {
+      animation: pt-glow 0.9s ease-in-out infinite alternate;
+    }
+    @keyframes pt-glow {
+      from { filter: drop-shadow(0 0 12px rgba(204,16,32,0.5)); transform: scale(0.97); }
+      to   { filter: drop-shadow(0 0 40px rgba(204,16,32,1))   drop-shadow(0 0 80px rgba(204,16,32,0.3)); transform: scale(1.04); }
+    }
+
+    /* Track (outer bar) */
+    #pt-track {
+      width: clamp(160px, 28vw, 280px);
+      height: 3px;
+      background: rgba(204,16,32,0.12);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    /* Fill — the logo outline traces itself */
+    #pt-fill {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 0%;
+      background: linear-gradient(to right, var(--maroon), var(--red), #ff5040);
+      border-radius: 3px;
+      box-shadow: 0 0 10px rgba(204,16,32,0.7);
+      transition: width 0.06s linear;
+    }
+    /* Shine sweep on top of fill */
+    #pt-fill::after {
+      content: '';
+      position: absolute; top: 0; right: 0; bottom: 0; width: 40px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+      animation: pt-shine 0.8s linear infinite;
+    }
+    @keyframes pt-shine {
+      from { transform: translateX(-40px); }
+      to   { transform: translateX(40px); }
+    }
+
+    #pt-label {
+      font-family: 'MadeTommy', sans-serif; font-weight: 300;
+      font-size: 0.62rem; letter-spacing: 8px; text-transform: uppercase;
+      color: rgba(250,245,239,0.25);
+      margin-top: -20px;
+    }
 
     /* ── PARTICLE TRAIL ── */
     .trail-particle {
@@ -1025,7 +1078,16 @@
 
 
 <div id="scrollProgress"></div>
-<div id="pageTransition"></div>
+<div id="pageTransition">
+  <svg id="pt-logo" viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
+    <path fill="#CC1020" d="M131.55,78.24l48.83,25.33c7.08,3.09,14.78-2.29,15.91-11.15a319.4,319.4,0,0,0,2.48-40.19A317.7,317.7,0,0,0,196.28,12C195.15,3.16,187.48-2.2,180.43.88L131.55,26.22c-4.7,2.05-7.82,7.37-7.82,13.32V64.92C123.73,70.87,126.85,76.19,131.55,78.24Z"/>
+    <path fill="#e03040" d="M88.88,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.17-7.16V36.15A7.17,7.17,0,0,0,88.88,29Z"/>
+    <path fill="#e03040" d="M109.89,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.16-7.16V36.15A7.17,7.17,0,0,0,109.89,29Z"/>
+  </svg>
+  <div id="pt-track"><div id="pt-fill"></div></div>
+  <div id="pt-label">Born Fly. Stay Original.</div>
+</div>
 
 <button id="backToTop" aria-label="Nach oben" title="Nach oben">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
@@ -1514,23 +1576,44 @@
 
   // ── PAGE TRANSITIONS ──
   const overlay = document.getElementById('pageTransition');
-  if (overlay) {
-    // Fade in on arrival
-    overlay.style.opacity = '1';
-    overlay.style.transition = 'none';
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      overlay.style.transition = 'opacity 0.4s ease';
+  const ptFill  = document.getElementById('pt-fill');
+
+  function runTransitionOut(href) {
+    overlay.classList.add('active');
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct += Math.random() * 12 + 8;
+      if (pct >= 100) { pct = 100; clearInterval(iv); setTimeout(() => { window.location.href = href; }, 120); }
+      if (ptFill) ptFill.style.width = pct + '%';
+    }, 55);
+  }
+
+  function runTransitionIn() {
+    if (!overlay) return;
+    overlay.classList.add('active');
+    if (ptFill) ptFill.style.width = '100%';
+    // Short pause then fade out
+    setTimeout(() => {
+      overlay.style.transition = 'opacity 0.45s ease';
       overlay.style.opacity = '0';
-    }));
-    // Fade out on leave
+      setTimeout(() => {
+        overlay.classList.remove('active');
+        overlay.style.opacity = '';
+        overlay.style.transition = '';
+        if (ptFill) ptFill.style.width = '0%';
+      }, 460);
+    }, 120);
+  }
+
+  if (overlay) {
+    runTransitionIn();
     document.querySelectorAll('a[href]').forEach(link => {
       const href = link.getAttribute('href');
       if (href && !href.startsWith('#') && href.endsWith('.html')) {
         link.addEventListener('click', e => {
           e.preventDefault();
-          overlay.style.opacity = '1';
-          overlay.style.pointerEvents = 'all';
-          setTimeout(() => { window.location.href = href; }, 380);
+          if (ptFill) ptFill.style.width = '0%';
+          runTransitionOut(href);
         });
       }
     });
