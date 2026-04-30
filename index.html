@@ -81,6 +81,10 @@
     }
     .cursor.hovered svg {
       transform: rotate(-12deg) scale(1.05);
+      transform-origin: center center;
+    }
+    .cursor svg {
+      transform-origin: center center;
     }
     .cursor.clicking {
       width: 28px; height: 16px;
@@ -1610,7 +1614,7 @@
         if (p >= 100) {
           p = 100; clearInterval(iv);
           if (pf) pf.style.width = '100%';
-          setTimeout(() => window.location.href = href, 120);
+          sessionStorage.setItem('ft_transit', '1'); setTimeout(() => window.location.href = href, 120);
           return;
         }
         if (pf) pf.style.width = p + '%';
@@ -1619,7 +1623,16 @@
 
     // Run on every page show (including bfcache back navigation)
     window.addEventListener('pageshow', (e) => {
-      transIn();
+      const wasTransition = sessionStorage.getItem('ft_transit');
+      sessionStorage.removeItem('ft_transit');
+      if (wasTransition || e.persisted) {
+        transIn();
+      } else {
+        // Fresh load: just make sure overlay is fully hidden, no flash
+        ov.style.cssText = 'opacity:0;pointer-events:none;transition:none';
+        ov.classList.remove('active');
+        if (pf) pf.style.width = '0%';
+      }
     });
 
     // Intercept all .html link clicks
