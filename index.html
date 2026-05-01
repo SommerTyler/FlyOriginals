@@ -345,29 +345,35 @@
     }
     .flyer-card {
       position: relative;
-      aspect-ratio: 3/4;
-      background: rgba(13,0,5,0.75);
-      background-size: cover;
-      background-position: center;
       cursor: none;
       overflow: hidden;
       border-radius: 10px 0 10px 10px;
+      background: rgba(13,0,5,0.4);
       transition: transform 0.4s cubic-bezier(0.25,0.8,0.25,1),
                   box-shadow 0.4s ease;
     }
     .flyer-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 32px 80px rgba(0,0,0,0.65), 0 0 60px rgba(204,16,32,0.08);
+      transform: translateY(-10px);
+      box-shadow: 0 40px 90px rgba(0,0,0,0.55), 0 0 50px rgba(204,16,32,0.1);
     }
+    .flyer-img {
+      display: block; width: 100%; height: auto;
+      object-fit: contain;
+      border-radius: 10px 0 10px 10px;
+      transition: transform 0.5s cubic-bezier(0.25,0.8,0.25,1);
+    }
+    .flyer-card:hover .flyer-img { transform: scale(1.015); }
     .flyer-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(
         to top,
-        rgba(13,0,5,0.92) 0%,
-        rgba(13,0,5,0.35) 45%,
-        transparent 100%
+        rgba(13,0,5,0.72) 0%,
+        rgba(13,0,5,0.06) 28%,
+        transparent 50%
       );
+      border-radius: 10px 0 10px 10px;
       transition: opacity 0.4s;
+      pointer-events: none;
     }
     /* Subtle texture grid pattern on placeholder */
     .flyer-placeholder {
@@ -848,32 +854,79 @@
     }
 
     /* ── MOBILE RESPONSIVE FIXES ── */
+    /* ── MOBILE: Tablet (≤900px) ── */
     @media (max-width: 900px) {
       #mobileNav { display: block; }
       body { padding-bottom: 65px; }
       #cookieBanner { padding: 16px 5%; }
-      .projects-grid { grid-template-columns: 1fr 1fr; gap: 3%; }
       .footer-inner { grid-template-columns: 1fr 1fr; gap: 6% 4%; }
       .footer-socials-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-      .projects-grid { grid-template-columns: 1fr; gap: 4%; }
-      .partners-grid { grid-template-columns: 1fr 1fr; gap: 4%; }
-      .about-inner { grid-template-columns: 1fr; gap: 8vh; }
-      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-      .hero-actions { flex-direction: column; align-items: center; }
-      .btn-large { width: 100%; justify-content: center; }
+
+      /* Hero tablet */
+      #hero { padding: 6vh 6% 8vh; }
+      .hero-logo img { width: clamp(200px, 70vw, 500px); }
+      .hero-tagline {
+        max-width: 80vw; min-width: unset;
+        font-size: clamp(1rem, 2.5vw, 1.4rem);
+        margin-bottom: 36px;
+      }
+      .hero-subtitle { font-size: 0.85rem; letter-spacing: 4px; }
+      .hero-eyebrow { font-size: 0.65rem; letter-spacing: 4px; margin-bottom: 24px; }
+      .hero-scroll { display: none; }
     }
 
-    /* Swipe-Indikator auf Mobile */
-    @media (max-width: 900px) {
-      .project-card-base::after {
-        content: '↕ tippen';
-        position: absolute; top: -22px; right: 12px;
-        font-family: 'MadeTommy', sans-serif; font-weight: 200;
-        font-size: 0.58rem; letter-spacing: 2px;
-        color: rgba(204,16,32,0.5);
+    /* ── MOBILE: Phone (≤600px) ── */
+    @media (max-width: 600px) {
+      /* Hero */
+      #hero {
+        padding: 5vh 5% 7vh;
+        justify-content: center;
+        gap: 0;
       }
+      .hero-eyebrow {
+        font-size: 0.6rem; letter-spacing: 3px;
+        padding: 5px 14px; margin-bottom: 20px;
+      }
+      .hero-logo { margin-bottom: 8px; }
+      .hero-logo img {
+        width: clamp(180px, 82vw, 360px);
+      }
+      .hero-subtitle {
+        font-size: 0.75rem; letter-spacing: 3px;
+        margin-bottom: 16px;
+      }
+      .hero-tagline {
+        font-size: clamp(0.95rem, 4vw, 1.2rem);
+        max-width: 90vw; min-width: unset;
+        line-height: 1.6; margin-bottom: 32px;
+        text-align: center;
+      }
+      .hero-actions {
+        flex-direction: column; align-items: stretch;
+        gap: 12px; width: 100%; max-width: 280px;
+      }
+      .btn-large {
+        width: 100%; justify-content: center;
+        padding: 14px 24px; font-size: 0.78rem;
+      }
+      .hero-scroll { display: none; }
+
+      /* Other sections */
+      .partners-grid { grid-template-columns: 1fr 1fr; gap: 4%; }
+      .about-inner { grid-template-columns: 1fr; gap: 6vh; }
+      .about-stats { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .stat-item { padding: 20px 14px; }
+      .stat-num { font-size: 2.4rem; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer-socials-grid { grid-template-columns: 1fr 1fr; }
+      .section-title { font-size: clamp(2rem, 10vw, 3.5rem); }
+    }
+
+    /* ── MOBILE: Very small (≤380px) ── */
+    @media (max-width: 380px) {
+      .hero-logo img { width: 88vw; }
+      .hero-tagline { font-size: 0.9rem; }
+      .footer-socials-grid { grid-template-columns: 1fr; }
     }
 
 
@@ -1184,20 +1237,20 @@
     </div>
   </div>
   <div class="flyers-grid">
-    <div class="flyer-card reveal" id="live-f1-bg" data-href="" style="transition-delay:0.1s;background-image:url('img_flyer1.jpg')">
+    <div class="flyer-card reveal" id="live-f1-bg" data-href="" style="transition-delay:0.1s">
+      <img class="flyer-img" id="live-f1-img" src="img_flyer1.jpg" alt="Flyer 01">
       <div class="flyer-overlay"></div>
       <div class="flyer-link-hint" id="live-f1-hint">Mehr erfahren ↗</div>
-      <div class="flyer-placeholder" style="display:none"></div>
       <div class="flyer-label">
         <div class="flyer-num">Flyer 01</div>
         <div class="flyer-title" id="live-f1-title">Jäger des verlorenen Knuffs</div>
       </div>
       <div class="flyer-peel"></div>
     </div>
-    <div class="flyer-card reveal" id="live-f2-bg" data-href="" style="transition-delay:0.25s;background-image:url('img_flyer2.jpg')">
+    <div class="flyer-card reveal" id="live-f2-bg" data-href="" style="transition-delay:0.25s">
+      <img class="flyer-img" id="live-f2-img" src="img_flyer2.jpg" alt="Flyer 02">
       <div class="flyer-overlay"></div>
       <div class="flyer-link-hint" id="live-f2-hint">Mehr erfahren ↗</div>
-      <div class="flyer-placeholder" style="display:none"></div>
       <div class="flyer-label">
         <div class="flyer-num">Flyer 02</div>
         <div class="flyer-title" id="live-f2-title">Jäger des verlorenen Knuffs</div>
