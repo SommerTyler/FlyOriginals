@@ -460,32 +460,53 @@
     /* ── PAGE PEEL (top-right corner) ── */
     .flyer-peel {
       position: absolute; top: 0; right: 0;
-      width: 44px; height: 44px;
+      width: 0; height: 0;
       z-index: 20; pointer-events: none;
-      transition: width 0.45s cubic-bezier(0.34,1.56,0.64,1),
-                  height 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      /* Triangle cut from card corner */
+      border-style: solid;
+      border-width: 0 0 0 0;
+      /* transition handled on wrapper */
     }
-    /* The folded face — shows background color + red at crease */
-    .flyer-peel::before {
-      content: ''; position: absolute; inset: 0;
+    .flyer-peel-wrap {
+      position: absolute; top: 0; right: 0;
+      width: 38px; height: 38px;
+      z-index: 20; pointer-events: none;
+      overflow: hidden;
+      transition: width 0.4s cubic-bezier(0.22,1,0.36,1),
+                  height 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .flyer-card:hover .flyer-peel-wrap {
+      width: 88px; height: 88px;
+    }
+    /* The folded triangle — paper back side */
+    .flyer-peel-wrap::before {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 100%; height: 100%;
+      /* White/light paper back */
       background: linear-gradient(
-        225deg,
-        #0d0005 36%,
-        rgba(160,10,20,0.55) 50%,
-        rgba(80,3,10,0.18) 66%,
-        transparent 82%
+        135deg,
+        #f0e8e0 0%,
+        #d8cfc8 40%,
+        #bfb8b0 100%
       );
-      clip-path: polygon(100% 0, 0 100%, 100% 100%);
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
     }
-    /* Depth shadow under the fold */
-    .flyer-peel::after {
-      content: ''; position: absolute; inset: 0;
-      background: rgba(0,0,0,0.35);
-      clip-path: polygon(100% 0, 0 100%, 100% 100%);
-      filter: blur(3px);
-      transform: translate(2px, -1px);
+    /* Shadow cast under the folded corner onto the image */
+    .flyer-peel-wrap::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 140%; height: 140%;
+      background: linear-gradient(
+        135deg,
+        transparent 30%,
+        rgba(0,0,0,0.22) 55%,
+        rgba(0,0,0,0.45) 70%,
+        transparent 85%
+      );
+      clip-path: polygon(100% 0, 45% 55%, 100% 100%);
+      transform: translate(8%, -8%);
     }
-    .flyer-card:hover .flyer-peel { width: 90px; height: 90px; }
 
     @media (max-width: 900px) {
       .flyers-grid { grid-template-columns: 1fr 1fr; gap: 4%; }
@@ -1245,7 +1266,7 @@
         <div class="flyer-num">Flyer 01</div>
         <div class="flyer-title" id="live-f1-title">Jäger des verlorenen Knuffs</div>
       </div>
-      <div class="flyer-peel"></div>
+      <div class="flyer-peel-wrap"></div>
     </div>
     <div class="flyer-card reveal" id="live-f2-bg" data-href="" style="transition-delay:0.25s">
       <img class="flyer-img" id="live-f2-img" src="img_flyer2.jpg" alt="Flyer 02">
@@ -1255,7 +1276,7 @@
         <div class="flyer-num">Flyer 02</div>
         <div class="flyer-title" id="live-f2-title">Jäger des verlorenen Knuffs</div>
       </div>
-      <div class="flyer-peel"></div>
+      <div class="flyer-peel-wrap"></div>
     </div>
     <div class="flyer-card reveal" id="live-f3-bg" data-href="" style="transition-delay:0.4s">
       <div class="flyer-overlay"></div>
@@ -1268,7 +1289,7 @@
         <div class="flyer-num">Flyer 03</div>
         <div class="flyer-title" id="live-f3-title">Titel</div>
       </div>
-      <div class="flyer-peel"></div>
+      <div class="flyer-peel-wrap"></div>
     </div>
   </div>
 </section>
