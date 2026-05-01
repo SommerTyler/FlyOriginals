@@ -383,7 +383,7 @@
 
   <div class="admin-tabs">
     <button class="tab-btn active" onclick="switchTab('hero', this)">Hero</button>
-    <button class="tab-btn" onclick="switchTab('projects', this)">Projekte</button>
+    <button class="tab-btn" onclick="switchTab('projects', this)">Flyer</button>
     <button class="tab-btn" onclick="switchTab('partners', this)">Partner</button>
     <button class="tab-btn" onclick="switchTab('about', this)">Über uns</button>
     <button class="tab-btn" onclick="switchTab('images', this)">Bilder</button>
@@ -407,8 +407,8 @@
   <!-- PROJEKTE -->
   <div class="tab-content" id="tab-projects">
     <div class="edit-card">
-      <div class="edit-card-title">Projekte Überschrift</div>
-      <div class="edit-field"><label>Abschnittstitel</label><input type="text" id="projects_title" placeholder="Unsere Projekte"></div>
+      <div class="edit-card-title">Flyer Überschrift</div>
+      <div class="edit-field"><label>Abschnittstitel</label><input type="text" id="projects_title" placeholder="Unsere Flyer"></div>
     </div>
     <div id="projects-list"></div>
   </div>
@@ -495,12 +495,7 @@
     hero_tagline: 'Wir erschaffen ikonische Fliegen-Krawatten,\ndie Geschichten erzählen und Charaktere definieren.',
     hero_btn1: 'Unsere Projekte', hero_btn2: 'Entdecke Partner',
     projects_title: 'Unsere Projekte',
-    project1_year:'2024', project1_title:'Classic Collection', project1_desc:'Zeitlose Designs für elegante Anlässe',
-    project2_year:'2024', project2_title:'Velvet Series',      project2_desc:'Luxusvolle Seidenmischungen in edlen Farben',
-    project3_year:'2023', project3_title:'Golden Edition',     project3_desc:'Exklusiv limitierte Sammleredition',
-    project4_year:'2023', project4_title:'Heritage Line',      project4_desc:'Klassische Rot-Schwarze Kombinationen',
-    project5_year:'2023', project5_title:'Statement Pieces',   project5_desc:'Bold & provocative designs für Trendsetter',
-    project6_year:'2022', project6_title:'Debut Campaign',     project6_desc:'Die Gründungskollektion, die alles begann',
+    flyer1_title:'', flyer2_title:'', flyer3_title:'',
     partners_title: 'Unsere Partner',
     partner1_name:'Luxury Brands',   partner1_desc:'Exklusive Kollaborationen mit führenden Designlabels',
     partner2_name:'Fashion Houses',  partner2_desc:'Partnerschaft mit internationalen Mode-Größen',
@@ -576,7 +571,7 @@
       const el = document.getElementById(key)
       if (el) el.value = content[key] ?? DEFAULTS[key]
     })
-    buildProjectCards(content)
+    buildProjectCards(content) // flyer cards
     buildPartnerCards(content)
     buildImageUploads(content)
     if (content['img_logo']) document.getElementById('current-logo').src = content['img_logo']
@@ -585,15 +580,23 @@
   function buildProjectCards(content = {}) {
     const list = document.getElementById('projects-list')
     list.innerHTML = ''
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 3; i++) {
+      const url = content[`img_flyer${i}`] || ''
       list.innerHTML += `
         <div class="edit-card">
-          <div class="edit-card-title">Projekt ${i}</div>
-          <div class="edit-grid">
-            <div class="edit-field"><label>Jahr</label><input type="text" id="project${i}_year" value="${content[`project${i}_year`] ?? DEFAULTS[`project${i}_year`]}"></div>
-            <div class="edit-field"><label>Titel</label><input type="text" id="project${i}_title" value="${content[`project${i}_title`] ?? DEFAULTS[`project${i}_title`]}"></div>
+          <div class="edit-card-title">Flyer ${i}</div>
+          <div class="edit-field"><label>Titel (wird unten auf dem Flyer angezeigt)</label>
+            <input type="text" id="flyer${i}_title" value="${content[`flyer${i}_title`] ?? ''}">
           </div>
-          <div class="edit-field"><label>Beschreibung</label><input type="text" id="project${i}_desc" value="${content[`project${i}_desc`] ?? DEFAULTS[`project${i}_desc`]}"></div>
+          ${url ? `<div class="current-image-preview"><img src="${url}" alt="Flyer ${i}" style="height:80px;width:60px;object-fit:cover"><div class="img-info">Aktuelles Bild</div></div>` : ''}
+          <div class="image-upload-area">
+            <input type="file" accept="image/*" onchange="uploadImage('flyer${i}', this)">
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-text">Flyer ${i} hochladen</div>
+            <div class="upload-hint">JPG, PNG · Hochformat empfohlen (3:4)</div>
+          </div>
+          <div class="upload-progress" id="progress-flyer${i}"><div class="upload-progress-bar" id="bar-flyer${i}"></div></div>
+          <div class="upload-status" id="status-flyer${i}"></div>
         </div>`
     }
   }
@@ -612,24 +615,9 @@
   }
 
   function buildImageUploads(content = {}) {
+    // Flyer images are handled directly in buildProjectCards
     const list = document.getElementById('project-images-list')
-    list.innerHTML = ''
-    for (let i = 1; i <= 6; i++) {
-      const url = content[`img_project${i}`] || ''
-      list.innerHTML += `
-        <div class="edit-card">
-          <div class="edit-card-title">Projekt ${i} Bild</div>
-          ${url ? `<div class="current-image-preview"><img src="${url}" alt="Projekt ${i}"><div class="img-info">Aktuelles Bild · Projekt ${i}</div></div>` : ''}
-          <div class="image-upload-area">
-            <input type="file" accept="image/*" onchange="uploadImage('project${i}', this)">
-            <div class="upload-icon">🖼️</div>
-            <div class="upload-text">Projekt ${i} hochladen</div>
-            <div class="upload-hint">JPG, PNG · 4:3 empfohlen</div>
-          </div>
-          <div class="upload-progress" id="progress-project${i}"><div class="upload-progress-bar" id="bar-project${i}"></div></div>
-          <div class="upload-status" id="status-project${i}"></div>
-        </div>`
-    }
+    if (list) list.innerHTML = ''
   }
 
   // ── KONTAKT NACHRICHTEN ──
@@ -664,10 +652,12 @@
     const btn = document.getElementById('save-btn')
     btn.textContent = '⏳ Speichert...'
     btn.classList.add('saving')
-    const upserts = Object.keys(DEFAULTS).map(key => {
+    // Add flyer titles to save
+    const flyerExtras = [1,2,3].map(i => ({ key: `flyer${i}_title`, value: document.getElementById(`flyer${i}_title`)?.value || '' }))
+    const upserts = [...Object.keys(DEFAULTS).map(key => {
       const el = document.getElementById(key)
       return el ? { key, value: el.value } : null
-    }).filter(Boolean)
+    }).filter(Boolean), ...flyerExtras]
     const { error } = await supabase.from('site_content').upsert(upserts, { onConflict: 'key' })
     if (error) {
       btn.innerHTML = '❌ Fehler!'

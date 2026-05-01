@@ -334,137 +334,134 @@
       max-width: 560px; color: rgba(13,0,5,0.78);
     }
 
-    /* ── PROJECTS GRID ── */
+    /* ── FLYER CARDS ── */
     #projects { padding: 8vh 8%; }
-    .projects-grid {
+    .flyers-grid {
       width: 100%;
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1.5%; margin-top: 4vh;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5%;
+      margin-top: 4vh;
     }
-    .project-card {
-      position: relative; overflow: hidden;
-      border: 1px solid rgba(204,16,32,0.15);
-      border-radius: 20px;
-      aspect-ratio: 4/3;
+    .flyer-card {
+      position: relative;
+      aspect-ratio: 3/4;
+      background: rgba(13,0,5,0.75);
+      background-size: cover;
+      background-position: center;
       cursor: none;
-      background: rgba(13,0,5,0.6);
-      transition: border-color 0.4s, box-shadow 0.4s;
+      overflow: hidden;
+      border-radius: 10px 0 10px 10px;
+      transition: transform 0.4s cubic-bezier(0.25,0.8,0.25,1),
+                  box-shadow 0.4s ease;
     }
-    .project-card:hover {
-      border-color: rgba(204,16,32,0.6);
-      box-shadow: 0 0 40px rgba(204,16,32,0.15), inset 0 0 60px rgba(59,0,16,0.3);
+    .flyer-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.65), 0 0 60px rgba(204,16,32,0.08);
     }
-    /* Decorative corner accents */
-    .project-card::before, .project-card::after {
-      content: '';
-      position: absolute;
-      width: 20px; height: 20px;
-      border-color: var(--red);
-      border-style: solid;
-      opacity: 0;
-      transition: opacity 0.4s, width 0.4s, height 0.4s;
-      z-index: 5;
-    }
-    .project-card::before { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
-    .project-card::after  { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
-    .project-card:hover::before, .project-card:hover::after { opacity: 1; width: 28px; height: 28px; }
-
-    .project-card-bg {
+    .flyer-overlay {
       position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .project-card:hover .project-card-bg { transform: scale(1.06); }
-
-    .project-card-emoji {
-      font-size: 5rem;
-      filter: drop-shadow(0 0 24px rgba(204,16,32,0.5));
-      opacity: 0.55;
-      transition: opacity 0.4s, filter 0.4s, transform 0.4s;
-      line-height: 1;
-    }
-    .project-card:hover .project-card-emoji {
-      opacity: 0.85;
-      filter: drop-shadow(0 0 36px rgba(204,16,32,0.8));
-      transform: scale(1.12) translateY(-6px);
-    }
-
-    /* Gradient background pattern */
-    .project-card-glow {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 30% 40%, rgba(122,0,32,0.35) 0%, transparent 65%),
-                  radial-gradient(ellipse at 80% 80%, rgba(59,0,16,0.4) 0%, transparent 50%);
+      background: linear-gradient(
+        to top,
+        rgba(13,0,5,0.92) 0%,
+        rgba(13,0,5,0.35) 45%,
+        transparent 100%
+      );
       transition: opacity 0.4s;
     }
-    .project-card:hover .project-card-glow { opacity: 1.4; }
-
-    /* Always-visible base info strip */
-    .project-card-base {
+    /* Subtle texture grid pattern on placeholder */
+    .flyer-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 20px;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 39px,
+          rgba(204,16,32,0.04) 39px,
+          rgba(204,16,32,0.04) 40px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 39px,
+          rgba(204,16,32,0.04) 39px,
+          rgba(204,16,32,0.04) 40px
+        );
+      transition: opacity 0.4s;
+    }
+    .flyer-ph-bow {
+      width: 60px; opacity: 0.18;
+      filter: drop-shadow(0 0 8px rgba(204,16,32,0.3));
+      transition: opacity 0.4s, filter 0.4s;
+    }
+    .flyer-card:hover .flyer-ph-bow {
+      opacity: 0.32;
+      filter: drop-shadow(0 0 16px rgba(204,16,32,0.6));
+    }
+    .flyer-ph-text {
+      font-family: 'MadeTommy', sans-serif; font-weight: 300;
+      font-size: 0.6rem; letter-spacing: 5px; text-transform: uppercase;
+      color: rgba(250,245,239,0.2);
+    }
+    /* Bottom label */
+    .flyer-label {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding: 16px 24px;
-      background: linear-gradient(to top, rgba(13,0,5,0.98) 0%, rgba(13,0,5,0.6) 70%, transparent 100%);
-      display: flex; align-items: flex-end; justify-content: space-between;
-      z-index: 4;
-      border-radius: 0 0 20px 20px;
+      padding: 22px 22px 20px;
+      z-index: 5;
+      transform: translateY(4px);
+      opacity: 0.85;
+      transition: transform 0.35s ease, opacity 0.35s;
     }
-    .project-title {
+    .flyer-card:hover .flyer-label { transform: translateY(0); opacity: 1; }
+    .flyer-num {
+      font-family: 'MadeTommy', sans-serif; font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 5px; text-transform: uppercase;
+      color: rgba(204,16,32,0.7); margin-bottom: 7px;
+    }
+    .flyer-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.5rem; letter-spacing: 2px;
-      color: var(--white);
-      line-height: 1;
-    }
-    .project-year-badge {
-      font-family: 'MadeTommy', sans-serif; font-weight: 200;
-      font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--red);
-      border: 1px solid rgba(204,16,32,0.4);
-      border-radius: 20px;
-      padding: 4px 12px;
-      white-space: nowrap;
-      flex-shrink: 0;
+      font-size: clamp(1.4rem, 2vw, 1.9rem);
+      letter-spacing: 3px; color: var(--white); line-height: 1;
     }
 
-    /* Hover-reveal detail overlay */
-    .project-card-content {
-      position: absolute; inset: 0;
-      padding: 28px;
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      text-align: center;
-      background: rgba(13,0,5,0.75);
-      backdrop-filter: blur(2px);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: 3;
-      pointer-events: none;
+    /* ── PAGE PEEL (top-right corner) ── */
+    .flyer-peel {
+      position: absolute; top: 0; right: 0;
+      width: 44px; height: 44px;
+      z-index: 20; pointer-events: none;
+      transition: width 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                  height 0.45s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .project-card:hover .project-card-content { opacity: 1; }
-    .project-card:hover .project-card-base { opacity: 0; }
+    /* The folded face — shows background color + red at crease */
+    .flyer-peel::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(
+        225deg,
+        #0d0005 36%,
+        rgba(160,10,20,0.55) 50%,
+        rgba(80,3,10,0.18) 66%,
+        transparent 82%
+      );
+      clip-path: polygon(100% 0, 0 100%, 100% 100%);
+    }
+    /* Depth shadow under the fold */
+    .flyer-peel::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.35);
+      clip-path: polygon(100% 0, 0 100%, 100% 100%);
+      filter: blur(3px);
+      transform: translate(2px, -1px);
+    }
+    .flyer-card:hover .flyer-peel { width: 90px; height: 90px; }
 
-    .project-content-emoji {
-      font-size: 3rem; margin-bottom: 16px;
-      filter: drop-shadow(0 0 20px rgba(204,16,32,0.7));
+    @media (max-width: 900px) {
+      .flyers-grid { grid-template-columns: 1fr 1fr; gap: 4%; }
     }
-    .project-content-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem; letter-spacing: 3px;
-      color: var(--white); margin-bottom: 8px;
-    }
-    .project-content-year {
-      font-family: 'MadeTommy', sans-serif; font-weight: 200;
-      font-size: 0.68rem; letter-spacing: 5px; text-transform: uppercase;
-      color: var(--red); margin-bottom: 14px;
-    }
-    .project-content-desc {
-      font-size: 0.92rem; line-height: 1.65;
-      font-family: 'BabyDoll', sans-serif;
-      color: rgba(250,245,239,0.7);
-      max-width: 240px;
-    }
-    .project-content-line {
-      width: 32px; height: 1px; background: var(--red);
-      margin: 14px auto 0;
+    @media (max-width: 600px) {
+      .flyers-grid { grid-template-columns: 1fr; gap: 5%; }
     }
 
     /* ── PARTNERS ── */
@@ -1020,17 +1017,17 @@
         set('live-btn1', c.hero_btn1)
         set('live-btn2', c.hero_btn2)
 
-        // Projects
+        // Flyer cards
         set('live-projects-title', c.projects_title)
-        for (let i = 1; i <= 6; i++) {
-          set(`live-p${i}-title`, c[`project${i}_title`])
-          set(`live-p${i}-year`,  c[`project${i}_year`])
-          set(`live-p${i}-desc`,  c[`project${i}_desc`])
-          // also update the base strip
-          const baseTitle = document.getElementById(`live-p${i}-base-title`)
-          const baseYear  = document.getElementById(`live-p${i}-base-year`)
-          if (baseTitle && c[`project${i}_title`]) baseTitle.textContent = c[`project${i}_title`]
-          if (baseYear  && c[`project${i}_year`])  baseYear.textContent  = c[`project${i}_year`]
+        for (let i = 1; i <= 3; i++) {
+          set(`live-f${i}-title`, c[`flyer${i}_title`])
+          const bg = document.getElementById(`live-f${i}-bg`)
+          if (bg && c[`img_flyer${i}`]) {
+            bg.style.backgroundImage = `url('${c[`img_flyer${i}`]}')`
+            // hide placeholder when image loaded
+            const ph = bg.querySelector('.flyer-placeholder')
+            if (ph) ph.style.opacity = '0'
+          }
         }
 
         // Partners
@@ -1060,13 +1057,7 @@
           document.querySelectorAll('.hero-logo img, .footer-logo-section img').forEach(img => img.src = c.img_logo)
         }
 
-        // Project images
-        for (let i = 1; i <= 6; i++) {
-          if (c[`img_project${i}`]) {
-            const bg = document.getElementById(`live-p${i}-bg`)
-            if (bg) bg.style.backgroundImage = `url('${c[`img_project${i}`]}')`
-          }
-        }
+        // Flyer images already handled above
       } catch(e) { console.warn('Live content unavailable:', e) }
     }
 
@@ -1160,99 +1151,45 @@
   <div>
     <div class="reveal">
       <p class="section-label">– Portfolio</p>
-      <h2 class="section-title" id="live-projects-title">Unsere Projekte</h2>
+      <h2 class="section-title" id="live-projects-title">Unsere Flyer</h2>
     </div>
   </div>
-  <div class="projects-grid">
-    <div class="project-card reveal" style="transition-delay:0.1s">
-      <div class="project-card-glow"></div>
-      <div class="project-card-bg"><div class="project-card-emoji">🎀</div></div>
-      <div class="project-card-base">
-        <div class="project-title" id="live-p1-base-title">Classic Collection</div>
-        <div class="project-year-badge" id="live-p1-base-year">2024</div>
+  <div class="flyers-grid">
+    <div class="flyer-card reveal" id="live-f1-bg" style="transition-delay:0.1s">
+      <div class="flyer-overlay"></div>
+      <div class="flyer-placeholder">
+        <img class="flyer-ph-bow" src="img_03.png" alt="">
+        <span class="flyer-ph-text">Flyer 01</span>
       </div>
-      <div class="project-card-content">
-        <div class="project-content-emoji">🎀</div>
-        <div class="project-content-year" id="live-p1-year">2024</div>
-        <div class="project-content-title" id="live-p1-title">Classic Collection</div>
-        <div class="project-content-desc" id="live-p1-desc">Zeitlose Designs für elegante Anlässe</div>
-        <div class="project-content-line"></div>
+      <div class="flyer-label">
+        <div class="flyer-num">Flyer 01</div>
+        <div class="flyer-title" id="live-f1-title">Titel</div>
       </div>
+      <div class="flyer-peel"></div>
     </div>
-    <div class="project-card reveal" style="transition-delay:0.2s">
-      <div class="project-card-glow"></div>
-      <div class="project-card-bg"><div class="project-card-emoji">🖤</div></div>
-      <div class="project-card-base">
-        <div class="project-title" id="live-p2-base-title">Velvet Series</div>
-        <div class="project-year-badge" id="live-p2-base-year">2024</div>
+    <div class="flyer-card reveal" id="live-f2-bg" style="transition-delay:0.25s">
+      <div class="flyer-overlay"></div>
+      <div class="flyer-placeholder">
+        <img class="flyer-ph-bow" src="img_03.png" alt="">
+        <span class="flyer-ph-text">Flyer 02</span>
       </div>
-      <div class="project-card-content">
-        <div class="project-content-emoji">🖤</div>
-        <div class="project-content-year" id="live-p2-year">2024</div>
-        <div class="project-content-title" id="live-p2-title">Velvet Series</div>
-        <div class="project-content-desc" id="live-p2-desc">Luxusvolle Seidenmischungen in edlen Farben</div>
-        <div class="project-content-line"></div>
+      <div class="flyer-label">
+        <div class="flyer-num">Flyer 02</div>
+        <div class="flyer-title" id="live-f2-title">Titel</div>
       </div>
+      <div class="flyer-peel"></div>
     </div>
-    <div class="project-card reveal" style="transition-delay:0.3s">
-      <div class="project-card-glow"></div>
-      <div class="project-card-bg"><div class="project-card-emoji">✨</div></div>
-      <div class="project-card-base">
-        <div class="project-title" id="live-p3-base-title">Golden Edition</div>
-        <div class="project-year-badge" id="live-p3-base-year">2023</div>
+    <div class="flyer-card reveal" id="live-f3-bg" style="transition-delay:0.4s">
+      <div class="flyer-overlay"></div>
+      <div class="flyer-placeholder">
+        <img class="flyer-ph-bow" src="img_03.png" alt="">
+        <span class="flyer-ph-text">Flyer 03</span>
       </div>
-      <div class="project-card-content">
-        <div class="project-content-emoji">✨</div>
-        <div class="project-content-year" id="live-p3-year">2023</div>
-        <div class="project-content-title" id="live-p3-title">Golden Edition</div>
-        <div class="project-content-desc" id="live-p3-desc">Exklusiv limitierte Sammleredition</div>
-        <div class="project-content-line"></div>
+      <div class="flyer-label">
+        <div class="flyer-num">Flyer 03</div>
+        <div class="flyer-title" id="live-f3-title">Titel</div>
       </div>
-    </div>
-    <div class="project-card reveal" style="transition-delay:0.4s">
-      <div class="project-card-glow"></div>
-      <div class="project-card-bg"><div class="project-card-emoji">🌹</div></div>
-      <div class="project-card-base">
-        <div class="project-title" id="live-p4-base-title">Heritage Line</div>
-        <div class="project-year-badge" id="live-p4-base-year">2023</div>
-      </div>
-      <div class="project-card-content">
-        <div class="project-content-emoji">🌹</div>
-        <div class="project-content-year" id="live-p4-year">2023</div>
-        <div class="project-content-title" id="live-p4-title">Heritage Line</div>
-        <div class="project-content-desc" id="live-p4-desc">Klassische Rot-Schwarze Kombinationen</div>
-        <div class="project-content-line"></div>
-      </div>
-    </div>
-    <div class="project-card reveal" style="transition-delay:0.5s">
-      <div class="project-card-glow"></div>
-      <div class="project-card-bg"><div class="project-card-emoji">🎭</div></div>
-      <div class="project-card-base">
-        <div class="project-title" id="live-p5-base-title">Statement Pieces</div>
-        <div class="project-year-badge" id="live-p5-base-year">2023</div>
-      </div>
-      <div class="project-card-content">
-        <div class="project-content-emoji">🎭</div>
-        <div class="project-content-year" id="live-p5-year">2023</div>
-        <div class="project-content-title" id="live-p5-title">Statement Pieces</div>
-        <div class="project-content-desc" id="live-p5-desc">Bold & provocative designs für Trendsetter</div>
-        <div class="project-content-line"></div>
-      </div>
-    </div>
-    <div class="project-card reveal" style="transition-delay:0.6s">
-      <div class="project-card-glow"></div>
-      <div class="project-card-bg"><div class="project-card-emoji">🔴</div></div>
-      <div class="project-card-base">
-        <div class="project-title" id="live-p6-base-title">Debut Campaign</div>
-        <div class="project-year-badge" id="live-p6-base-year">2022</div>
-      </div>
-      <div class="project-card-content">
-        <div class="project-content-emoji">🔴</div>
-        <div class="project-content-year" id="live-p6-year">2022</div>
-        <div class="project-content-title" id="live-p6-title">Debut Campaign</div>
-        <div class="project-content-desc" id="live-p6-desc">Die Gründungskollektion, die alles begann</div>
-        <div class="project-content-line"></div>
-      </div>
+      <div class="flyer-peel"></div>
     </div>
   </div>
 </section>
@@ -1488,6 +1425,15 @@
     const intro = document.getElementById('intro');
     const fill  = document.getElementById('introFill');
     if (!intro) return;
+
+    // Wenn wir via Seitenübergang ankommen → Intro sofort überspringen
+    // (der Übergangs-Screen hat bereits die Fliege + Ladebalken gezeigt)
+    if (sessionStorage.getItem('ft_transit')) {
+      intro.style.display = 'none';
+      document.body.style.overflow = '';
+      document.body.style.pointerEvents = '';
+      return;
+    }
 
     function hideIntro() {
       intro.classList.add('hidden');
