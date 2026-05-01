@@ -611,10 +611,20 @@
     };
 
     try {
-      // Try Supabase if available
+      // Save to Supabase
       if (window.supabase) {
         const { error } = await window.supabase.from('kontakt').insert([payload]);
         if (error) throw error;
+
+        // Trigger e-mail notification via Supabase Edge Function
+        // (silent fail — doesn't break form if function not deployed yet)
+        try {
+          await window.supabase.functions.invoke('notify-kontakt', {
+            body: payload
+          });
+        } catch(fnErr) {
+          console.info('Email notification not yet active:', fnErr.message);
+        }
       }
       // Success
       form.reset();

@@ -588,6 +588,9 @@
           <div class="edit-field"><label>Titel (wird unten auf dem Flyer angezeigt)</label>
             <input type="text" id="flyer${i}_title" value="${content[`flyer${i}_title`] ?? ''}">
           </div>
+          <div class="edit-field"><label>Link (URL beim Klick auf den Flyer)</label>
+            <input type="text" id="flyer${i}_href" placeholder="https://..." value="${content[`flyer${i}_href`] ?? ''}">
+          </div>
           ${url ? `<div class="current-image-preview"><img src="${url}" alt="Flyer ${i}" style="height:80px;width:60px;object-fit:cover"><div class="img-info">Aktuelles Bild</div></div>` : ''}
           <div class="image-upload-area">
             <input type="file" accept="image/*" onchange="uploadImage('flyer${i}', this)">
@@ -653,7 +656,10 @@
     btn.textContent = '⏳ Speichert...'
     btn.classList.add('saving')
     // Add flyer titles to save
-    const flyerExtras = [1,2,3].map(i => ({ key: `flyer${i}_title`, value: document.getElementById(`flyer${i}_title`)?.value || '' }))
+    const flyerExtras = [1,2,3].flatMap(i => [
+      { key: `flyer${i}_title`, value: document.getElementById(`flyer${i}_title`)?.value || '' },
+      { key: `flyer${i}_href`,  value: document.getElementById(`flyer${i}_href`)?.value  || '' }
+    ])
     const upserts = [...Object.keys(DEFAULTS).map(key => {
       const el = document.getElementById(key)
       return el ? { key, value: el.value } : null

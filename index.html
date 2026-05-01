@@ -427,6 +427,30 @@
       letter-spacing: 3px; color: var(--white); line-height: 1;
     }
 
+
+    /* ── FLYER CARD LINKS ── */
+    .flyer-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      height: 100%;
+    }
+    .flyer-link-hint {
+      position: absolute;
+      top: 16px; left: 18px;
+      z-index: 10;
+      font-family: 'MadeTommy', sans-serif; font-weight: 500;
+      font-size: 0.58rem; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(250,245,239,0.0);
+      background: rgba(204,16,32,0.75);
+      padding: 5px 12px; border-radius: 50px;
+      transition: color 0.35s, background 0.35s;
+      backdrop-filter: blur(4px);
+    }
+    .flyer-card:hover .flyer-link-hint {
+      color: rgba(250,245,239,0.95);
+    }
+
     /* ── PAGE PEEL (top-right corner) ── */
     .flyer-peel {
       position: absolute; top: 0; right: 0;
@@ -1020,13 +1044,18 @@
         // Flyer cards
         set('live-projects-title', c.projects_title)
         for (let i = 1; i <= 3; i++) {
-          set(`live-f${i}-title`, c[`flyer${i}_title`])
+          if (c[`flyer${i}_title`]) set(`live-f${i}-title`, c[`flyer${i}_title`])
           const bg = document.getElementById(`live-f${i}-bg`)
-          if (bg && c[`img_flyer${i}`]) {
-            bg.style.backgroundImage = `url('${c[`img_flyer${i}`]}')`
-            // hide placeholder when image loaded
-            const ph = bg.querySelector('.flyer-placeholder')
-            if (ph) ph.style.opacity = '0'
+          if (bg) {
+            if (c[`img_flyer${i}`]) {
+              bg.style.backgroundImage = `url('${c[`img_flyer${i}`]}')`
+              const ph = bg.querySelector('.flyer-placeholder')
+              if (ph) ph.style.display = 'none'
+            }
+            if (c[`flyer${i}_href`]) bg.dataset.href = c[`flyer${i}_href`]
+            // Show hint only if href is set
+            const hint = document.getElementById(`live-f${i}-hint`)
+            if (hint) hint.style.display = c[`flyer${i}_href`] ? '' : 'none'
           }
         }
 
@@ -1155,32 +1184,29 @@
     </div>
   </div>
   <div class="flyers-grid">
-    <div class="flyer-card reveal" id="live-f1-bg" style="transition-delay:0.1s">
+    <div class="flyer-card reveal" id="live-f1-bg" data-href="" style="transition-delay:0.1s;background-image:url('img_flyer1.jpg')">
       <div class="flyer-overlay"></div>
-      <div class="flyer-placeholder">
-        <img class="flyer-ph-bow" src="img_03.png" alt="">
-        <span class="flyer-ph-text">Flyer 01</span>
-      </div>
+      <div class="flyer-link-hint" id="live-f1-hint">Mehr erfahren ↗</div>
+      <div class="flyer-placeholder" style="display:none"></div>
       <div class="flyer-label">
         <div class="flyer-num">Flyer 01</div>
-        <div class="flyer-title" id="live-f1-title">Titel</div>
+        <div class="flyer-title" id="live-f1-title">Jäger des verlorenen Knuffs</div>
       </div>
       <div class="flyer-peel"></div>
     </div>
-    <div class="flyer-card reveal" id="live-f2-bg" style="transition-delay:0.25s">
+    <div class="flyer-card reveal" id="live-f2-bg" data-href="" style="transition-delay:0.25s;background-image:url('img_flyer2.jpg')">
       <div class="flyer-overlay"></div>
-      <div class="flyer-placeholder">
-        <img class="flyer-ph-bow" src="img_03.png" alt="">
-        <span class="flyer-ph-text">Flyer 02</span>
-      </div>
+      <div class="flyer-link-hint" id="live-f2-hint">Mehr erfahren ↗</div>
+      <div class="flyer-placeholder" style="display:none"></div>
       <div class="flyer-label">
         <div class="flyer-num">Flyer 02</div>
-        <div class="flyer-title" id="live-f2-title">Titel</div>
+        <div class="flyer-title" id="live-f2-title">Jäger des verlorenen Knuffs</div>
       </div>
       <div class="flyer-peel"></div>
     </div>
-    <div class="flyer-card reveal" id="live-f3-bg" style="transition-delay:0.4s">
+    <div class="flyer-card reveal" id="live-f3-bg" data-href="" style="transition-delay:0.4s">
       <div class="flyer-overlay"></div>
+      <div class="flyer-link-hint" id="live-f3-hint">Mehr erfahren ↗</div>
       <div class="flyer-placeholder">
         <img class="flyer-ph-bow" src="img_03.png" alt="">
         <span class="flyer-ph-text">Flyer 03</span>
@@ -1506,6 +1532,17 @@
   const ts = document.createElement('style');
   ts.textContent = `.project-card.touch-open .project-card-content{opacity:1!important}.project-card.touch-open .project-card-base{opacity:0!important}.project-card.touch-open{border-color:rgba(204,16,32,.6)!important}`;
   document.head.appendChild(ts);
+
+
+  // ── FLYER CARD CLICK ──
+  document.querySelectorAll('.flyer-card[data-href]').forEach(card => {
+    card.addEventListener('click', () => {
+      const href = card.dataset.href;
+      if (href && href.trim()) {
+        window.open(href, '_blank');
+      }
+    });
+  });
 
   // ── SCROLL PROGRESS BAR ──
   const progressBar = document.getElementById('scrollProgress');
