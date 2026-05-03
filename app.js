@@ -3,7 +3,7 @@
 /* ════════ CURSOR ════════ */
 const cursor = document.getElementById('cursor');
 const ring   = document.getElementById('cursor-ring');
-let mx = 0, my = 0, rx = 0, ry = 0;
+let mx = -200, my = -200, rx = -200, ry = -200;
 document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
   cursor.style.left = mx + 'px';
@@ -47,13 +47,11 @@ window.addEventListener('scroll', () => {
 /* ════════ ABOUT ANIMATIONS (ScrollTrigger) ════════ */
 gsap.registerPlugin(ScrollTrigger);
 
-/* Helper: reveal an element */
+/* Helper: reveal via gsap.to — Transitions feuern garantiert */
 function revealEl(id, delay = 0) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.style.transition = `opacity .8s ${delay}s ease, transform .8s ${delay}s ease`;
-  el.style.opacity = '1';
-  el.style.transform = 'none';
+  gsap.to(el, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, delay, ease: 'power3.out' });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -90,11 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Stats + counter ── */
   function animCounter(el, target, ms) {
+    const numNode = el.querySelector('.count');
+    if (!numNode) return;
     const start = performance.now();
     (function tick(now) {
       const p = Math.min((now - start) / ms, 1);
       const e = 1 - Math.pow(1 - p, 3);
-      el.childNodes[0].textContent = Math.round(e * target);
+      numNode.textContent = Math.round(e * target);
       if (p < 1) requestAnimationFrame(tick);
     })(performance.now());
   }
@@ -114,10 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onEnter: () => {
       revealEl('timeline-wrap');
       document.querySelectorAll('.tl-item').forEach((el, i) => {
-        setTimeout(() => {
-          el.style.transition = 'opacity .6s ease, transform .6s ease';
-          el.style.opacity = '1'; el.style.transform = 'translateX(0)';
-        }, i * 180);
+        gsap.to(el, { opacity: 1, x: 0, duration: 0.6, delay: i * 0.18, ease: 'power3.out' });
       });
     }
   });
@@ -128,12 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.skill-tag').forEach((tag, i) => {
         const xDir = (Math.random() - 0.5) * 60;
         const yDir = Math.random() * 30 + 10;
-        tag.style.transform = `translate(${xDir}px,${yDir}px)`;
-        setTimeout(() => {
-          tag.style.transition = `opacity .5s ease, transform .6s cubic-bezier(.22,1,.36,1)`;
-          tag.style.transform = 'translate(0,0)';
-          tag.classList.add('in');
-        }, 100 + i * 70);
+        gsap.set(tag, { x: xDir, y: yDir, opacity: 0 });
+        gsap.to(tag, {
+          x: 0, y: 0, opacity: 1,
+          duration: 0.6, delay: 0.1 + i * 0.07,
+          ease: 'power3.out'
+        });
       });
     }
   });

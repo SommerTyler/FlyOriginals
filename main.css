@@ -431,7 +431,7 @@ nav.scrolled {
   font-family: var(--font-display); font-size: 40px; font-weight: 800;
   color: var(--white); line-height: 1; margin-bottom: 8px;
 }
-.stat-num span { color: var(--accent); font-size: 28px; }
+.stat-num span.plus { color: var(--accent); font-size: 28px; }
 .stat-label {
   font-family: var(--font-label); font-size: 10px; letter-spacing: .25em;
   color: var(--silver); text-transform: uppercase; opacity: .7;

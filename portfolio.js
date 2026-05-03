@@ -190,37 +190,30 @@ function closeLightbox() {
   }, 400);
 }
 
-/* ── Scroll Reveal für Portfolio ── */
+/* ── Scroll Reveal für Portfolio — via gsap.to() ── */
 function initPortfolioScrollReveal() {
   ScrollTrigger.create({ trigger: '#portfolio', start: 'top 82%',
     onEnter: () => {
-      document.querySelector('.portfolio-eyebrow').style.cssText +=
-        ';transition:opacity .7s ease,transform .7s ease;opacity:1;transform:none';
-      setTimeout(() => {
-        const pt = document.querySelector('.portfolio-title');
-        pt.style.cssText += ';transition:opacity .7s .1s ease,transform .7s .1s ease;opacity:1;transform:none';
-      }, 100);
+      gsap.to('.portfolio-eyebrow', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+      gsap.to('.portfolio-title',   { opacity: 1, y: 0, duration: 0.7, delay: 0.1, ease: 'power3.out' });
     }
   });
 
   ScrollTrigger.create({ trigger: '.reel-stage', start: 'top 82%',
     onEnter: () => {
-      const rs = document.querySelector('.reel-stage');
-      rs.style.cssText += ';transition:opacity .9s ease,transform .9s ease;opacity:1;transform:none';
+      gsap.to('.reel-stage', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' });
     }
   });
 
   ScrollTrigger.create({ trigger: '.portfolio-filters', start: 'top 85%',
     onEnter: () => {
-      const pf = document.querySelector('.portfolio-filters');
-      pf.style.cssText += ';transition:opacity .7s ease,transform .7s ease;opacity:1;transform:none';
+      gsap.to('.portfolio-filters', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' });
     }
   });
 
   ScrollTrigger.create({ trigger: '.projects-grid', start: 'top 85%',
     onEnter: () => {
-      const pg = document.querySelector('.projects-grid');
-      pg.style.cssText += ';transition:opacity .8s ease,transform .8s ease;opacity:1;transform:none';
+      gsap.to('.projects-grid', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
     }
   });
 }
