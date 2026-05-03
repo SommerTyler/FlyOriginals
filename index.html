@@ -705,41 +705,187 @@
     /* ── INTRO SCREEN ── */
     #intro {
       position: fixed; inset: 0; z-index: 99999;
-      background: var(--black);
+      background: #000;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      gap: 32px;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
+      gap: 28px;
+      transition: opacity 0.9s ease, visibility 0.9s ease;
+      overflow: hidden;
     }
     #intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    /* Film grain overlay */
+    #intro-grain {
+      position: absolute; inset: -50%;
+      width: 200%; height: 200%;
+      pointer-events: none; z-index: 1;
+      opacity: 0.045;
+      animation: grain-shift 0.08s steps(1) infinite;
+    }
+    @keyframes grain-shift {
+      0%  { transform: translate(0,    0);    }
+      10% { transform: translate(-3%, -4%);  }
+      20% { transform: translate(4%,   2%);  }
+      30% { transform: translate(-2%,  5%);  }
+      40% { transform: translate(3%,  -3%);  }
+      50% { transform: translate(-5%,  1%);  }
+      60% { transform: translate(2%,   4%);  }
+      70% { transform: translate(-4%, -2%);  }
+      80% { transform: translate(5%,   3%);  }
+      90% { transform: translate(-1%, -5%);  }
+    }
+
+    /* Letterbox bars */
+    #intro-bar-top, #intro-bar-bottom {
+      position: absolute; left: 0; right: 0;
+      height: 0; background: #000; z-index: 5;
+      transition: height 1.2s cubic-bezier(0.22,1,0.36,1);
+    }
+    #intro-bar-top    { top: 0; }
+    #intro-bar-bottom { bottom: 0; }
+    #intro.cinema #intro-bar-top,
+    #intro.cinema #intro-bar-bottom { height: 11vh; }
+
+    /* Curtains */
+    #curtain-left, #curtain-right {
+      position: absolute; top: 0; bottom: 0; z-index: 4;
+      width: 52%;
+      transition: transform 1.8s cubic-bezier(0.76,0,0.24,1);
+    }
+    #curtain-left  { left: 0;  transform: translateX(0); }
+    #curtain-right { right: 0; transform: translateX(0); }
+
+    #curtain-left svg,
+    #curtain-right svg { width: 100%; height: 100%; display: block; }
+
+    #intro.open #curtain-left  { transform: translateX(-96%); }
+    #intro.open #curtain-right { transform: translateX(96%);  }
+
+    /* Projector spotlight on logo */
+    #intro-spotlight {
+      position: absolute; z-index: 3;
+      width: 60vw; height: 60vw;
+      max-width: 700px; max-height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(255,248,220,0.12) 0%,
+        rgba(255,220,150,0.06) 30%,
+        transparent 70%
+      );
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.2s ease 0.6s;
+    }
+    #intro.cinema #intro-spotlight { opacity: 1; }
+
+    /* Logo + content layer */
+    #intro-content {
+      position: relative; z-index: 6;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 28px;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.9s ease 0.8s, transform 0.9s ease 0.8s;
+    }
+    #intro.cinema #intro-content { opacity: 1; transform: scale(1); }
+
     .intro-bow {
       width: clamp(120px, 20vw, 220px);
-      filter: drop-shadow(0 0 30px rgba(204,16,32,0.8));
-      animation: intro-pulse 1.2s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 30px rgba(204,16,32,0.8)) drop-shadow(0 0 60px rgba(204,16,32,0.3));
+      animation: intro-pulse 1.4s ease-in-out infinite alternate;
     }
     .intro-bar {
       width: clamp(180px, 25vw, 300px); height: 3px;
       background: rgba(204,16,32,0.12);
-      overflow: hidden; position: relative;
-      border-radius: 3px;
+      overflow: hidden; position: relative; border-radius: 3px;
     }
     .intro-bar-fill {
       position: absolute; left: 0; top: 0; bottom: 0;
-      background: linear-gradient(to right, var(--maroon), var(--red));
-      width: 0%;
-      transition: width 0.05s linear;
-      border-radius: 3px;
+      background: linear-gradient(to right, var(--maroon), var(--red), #ff5040);
+      width: 0%; border-radius: 3px;
+      transition: width 0.06s linear;
+      box-shadow: 0 0 8px rgba(204,16,32,0.6);
     }
     .intro-text {
-      font-family: 'MadeTommy', sans-serif; font-weight: 200;
-      font-size: 0.68rem; letter-spacing: 8px; text-transform: uppercase;
-      color: rgba(250,245,239,0.3);
-      animation: fadeIn 0.5s ease 0.3s both;
+      font-family: 'MadeTommy', sans-serif; font-weight: 300;
+      font-size: 0.62rem; letter-spacing: 9px; text-transform: uppercase;
+      color: rgba(250,245,239,0.28);
     }
+
+    /* Projector light flare */
+    #intro-flare {
+      position: absolute; z-index: 7;
+      top: 50%; left: -10%;
+      width: 120%; height: 4px;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255,248,220,0.55) 30%,
+        rgba(255,255,255,0.85) 45%,
+        rgba(255,248,220,0.55) 60%,
+        transparent 100%
+      );
+      border-radius: 2px;
+      pointer-events: none;
+      opacity: 0;
+      animation: flare-sweep 0s ease forwards;
+      filter: blur(1.5px);
+    }
+    @keyframes flare-sweep {
+      0%   { opacity: 0;    transform: translateX(-80%) scaleX(0.3); }
+      30%  { opacity: 0.9;  transform: translateX(0%)   scaleX(1);   }
+      70%  { opacity: 0.6;  transform: translateX(20%)  scaleX(0.8); }
+      100% { opacity: 0;    transform: translateX(50%)  scaleX(0.4); }
+    }
+    #intro.cinema #intro-flare {
+      animation: flare-sweep 1.4s ease 0.4s forwards;
+    }
+
+    /* Sound toggle button */
+    #intro-sound {
+      position: absolute; bottom: 32px; right: 32px; z-index: 8;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0;
+      transition: opacity 0.6s ease 1.4s, background 0.3s, border-color 0.3s;
+      color: rgba(255,255,255,0.4);
+    }
+    #intro.cinema #intro-sound { opacity: 1; }
+    #intro-sound:hover {
+      background: rgba(204,16,32,0.15);
+      border-color: rgba(204,16,32,0.4);
+      color: rgba(255,255,255,0.8);
+    }
+    #intro-sound.active { border-color: rgba(204,16,32,0.6); color: var(--red); }
+
+    /* Skip hint */
+    #intro-skip {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      font-family: 'MadeTommy', sans-serif; font-weight: 300;
+      font-size: 0.58rem; letter-spacing: 5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.18); z-index: 8;
+      opacity: 0; transition: opacity 0.6s ease 1.8s;
+      pointer-events: none;
+    }
+    #intro.cinema #intro-skip { opacity: 1; }
+
     @keyframes intro-pulse {
-      from { filter: drop-shadow(0 0 20px rgba(204,16,32,0.6)); transform: scale(0.97); }
-      to   { filter: drop-shadow(0 0 45px rgba(204,16,32,1)); transform: scale(1.03); }
+      from { filter: drop-shadow(0 0 20px rgba(204,16,32,0.5)) drop-shadow(0 0 40px rgba(204,16,32,0.2)); transform: scale(0.97); }
+      to   { filter: drop-shadow(0 0 50px rgba(204,16,32,1))   drop-shadow(0 0 90px rgba(204,16,32,0.4)); transform: scale(1.03); }
     }
+    @keyframes projector-flicker {
+      0%,100% { opacity: 1; }
+      92%     { opacity: 1; }
+      93%     { opacity: 0.85; }
+      94%     { opacity: 1; }
+      96%     { opacity: 0.9; }
+      97%     { opacity: 1; }
+    }
+    #intro-content { animation: projector-flicker 4s ease 2s infinite; }
+    #intro.cinema #intro-content { animation: projector-flicker 4s ease 2s infinite; }
 
     /* ── COOKIE BANNER ── */
     #cookieBanner {
@@ -1136,14 +1282,68 @@
 
 
 <div id="intro">
-  <svg class="intro-bow" viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
+  <svg id="intro-grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="grain-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grain-filter)"/>
+</svg>
+  <div id="intro-bar-top"></div>
+  <div id="intro-bar-bottom"></div>
+  <div id="curtain-left"><svg viewBox="0 0 220 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#1a0008"/>
+      <stop offset="18%"  stop-color="#4a0015"/>
+      <stop offset="38%"  stop-color="#8B0020"/>
+      <stop offset="55%"  stop-color="#CC1020"/>
+      <stop offset="72%"  stop-color="#a00018"/>
+      <stop offset="88%"  stop-color="#6B0012"/>
+      <stop offset="100%" stop-color="#3a000e"/>
+    </linearGradient>
+  </defs>
+  <path d="M0,0 Q30,100 10,200 Q-10,300 25,400 Q55,500 15,600 Q-10,700 0,800 L220,800 Q200,700 215,600 Q235,500 210,400 Q185,300 210,200 Q230,100 220,0 Z" fill="url(#cl)"/>
+  <path d="M40,0 Q55,120 35,240 Q15,360 50,480 Q75,580 45,700 L60,700 Q85,580 62,480 Q28,360 48,240 Q68,120 55,0Z" fill="rgba(0,0,0,0.18)"/>
+  <path d="M90,0 Q108,130 85,260 Q62,380 95,500 Q115,600 88,720 L103,720 Q128,600 107,500 Q74,380 97,260 Q120,130 105,0Z" fill="rgba(0,0,0,0.12)"/>
+  <path d="M145,0 Q162,110 140,220 Q118,340 150,460 Q170,560 145,680 L162,680 Q185,560 163,460 Q131,340 153,220 Q175,110 160,0Z" fill="rgba(0,0,0,0.1)"/>
+</svg></div>
+  <div id="curtain-right"><svg viewBox="0 0 220 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
+  <defs>
+    <linearGradient id="cr" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#1a0008"/>
+      <stop offset="18%"  stop-color="#4a0015"/>
+      <stop offset="38%"  stop-color="#8B0020"/>
+      <stop offset="55%"  stop-color="#CC1020"/>
+      <stop offset="72%"  stop-color="#a00018"/>
+      <stop offset="88%"  stop-color="#6B0012"/>
+      <stop offset="100%" stop-color="#3a000e"/>
+    </linearGradient>
+  </defs>
+  <path d="M0,0 Q30,100 10,200 Q-10,300 25,400 Q55,500 15,600 Q-10,700 0,800 L220,800 Q200,700 215,600 Q235,500 210,400 Q185,300 210,200 Q230,100 220,0 Z" fill="url(#cr)"/>
+  <path d="M40,0 Q55,120 35,240 Q15,360 50,480 Q75,580 45,700 L60,700 Q85,580 62,480 Q28,360 48,240 Q68,120 55,0Z" fill="rgba(0,0,0,0.18)"/>
+  <path d="M90,0 Q108,130 85,260 Q62,380 95,500 Q115,600 88,720 L103,720 Q128,600 107,500 Q74,380 97,260 Q120,130 105,0Z" fill="rgba(0,0,0,0.12)"/>
+  <path d="M145,0 Q162,110 140,220 Q118,340 150,460 Q170,560 145,680 L162,680 Q185,560 163,460 Q131,340 153,220 Q175,110 160,0Z" fill="rgba(0,0,0,0.1)"/>
+</svg></div>
+  <div id="intro-spotlight"></div>
+  <div id="intro-flare"></div>
+  <div id="intro-content">
+    <svg class="intro-bow" viewBox="0 0 198.77 104.44" xmlns="http://www.w3.org/2000/svg">
     <path fill="#CC1020" d="M67.22,78.24,18.38,103.57c-7.07,3.09-14.77-2.29-15.91-11.15A319.7,319.7,0,0,1,0,52.23,319.9,319.9,0,0,1,2.48,12C3.61,3.16,11.29-2.2,18.34.88L67.22,26.22C71.92,28.27,75,33.59,75,39.54V64.92C75,70.87,71.92,76.19,67.22,78.24Z"/>
     <path fill="#CC1020" d="M131.55,78.24l48.83,25.33c7.08,3.09,14.78-2.29,15.91-11.15a319.4,319.4,0,0,0,2.48-40.19A317.7,317.7,0,0,0,196.28,12C195.15,3.16,187.48-2.2,180.43.88L131.55,26.22c-4.7,2.05-7.82,7.37-7.82,13.32V64.92C123.73,70.87,126.85,76.19,131.55,78.24Z"/>
     <path fill="#e03040" d="M88.88,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.17-7.16V36.15A7.17,7.17,0,0,0,88.88,29Z"/>
     <path fill="#e03040" d="M109.89,29a7.17,7.17,0,0,0-7.17,7.17V68.3a7.17,7.17,0,0,0,7.17,7.16h0a7.17,7.17,0,0,0,7.16-7.16V36.15A7.17,7.17,0,0,0,109.89,29Z"/>
   </svg>
-  <div class="intro-bar"><div class="intro-bar-fill" id="introFill"></div></div>
-  <div class="intro-text">Born Fly. Stay Original.</div>
+    <div class="intro-bar"><div class="intro-bar-fill" id="introFill"></div></div>
+    <div class="intro-text">Born Fly. Stay Original.</div>
+  </div>
+  <button id="intro-sound" title="Sound ein/aus" onclick="toggleIntroSound(this)">
+    <svg id="sound-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <path id="sound-waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    </svg>
+  </button>
+  <div id="intro-skip">Klicken zum Überspringen</div>
 </div>
 
 <div class="cursor" id="cursor">
@@ -1460,14 +1660,14 @@
     if (h) h.style.transform = `translateY(${y * 0.22}px)`;
   }, { passive: true });
 
-  // ── INTRO SCREEN ──
+  // ── INTRO SCREEN (Kinematisch) ──
   (function() {
-    const intro = document.getElementById('intro');
-    const fill  = document.getElementById('introFill');
+    const intro   = document.getElementById('intro');
+    const fill    = document.getElementById('introFill');
+    const content = document.getElementById('intro-content');
     if (!intro) return;
 
-    // Wenn wir via Seitenübergang ankommen → Intro sofort überspringen
-    // (der Übergangs-Screen hat bereits die Fliege + Ladebalken gezeigt)
+    // Via Seitenübergang → Intro sofort überspringen
     if (sessionStorage.getItem('ft_transit')) {
       intro.style.display = 'none';
       document.body.style.overflow = '';
@@ -1475,36 +1675,100 @@
       return;
     }
 
+    let done = false;
     function hideIntro() {
+      if (done) return;
+      done = true;
       intro.classList.add('hidden');
       document.body.style.overflow      = '';
       document.body.style.pointerEvents = '';
+      stopIntroAudio();
     }
 
-    // Sicherheits-Timeout: spätestens nach 2.5s weg egal was
-    const safetyTimer = setTimeout(hideIntro, 2500);
+    // Safety: spätestens nach 4s weg
+    const safetyTimer = setTimeout(hideIntro, 4000);
 
-    let pct = 0;
-    const iv = setInterval(() => {
-      pct += Math.random() * 10 + 6;
-      if (pct >= 100) {
-        pct = 100;
-        fill.style.width = '100%';
-        clearInterval(iv);
-        clearTimeout(safetyTimer);
-        setTimeout(hideIntro, 280);
-        return;
-      }
-      fill.style.width = pct + '%';
-    }, 50);
-
+    // ── Kinematische Sequenz ──
     document.body.style.overflow      = 'hidden';
     document.body.style.pointerEvents = 'none';
 
-    // Klick überspringt Intro sofort
-    intro.addEventListener('click', () => {
-      clearInterval(iv); clearTimeout(safetyTimer); hideIntro();
+    // Schritt 1 (50ms): Letterbox + Vorhänge + Spotlight einblenden
+    setTimeout(() => intro.classList.add('cinema'), 50);
+
+    // Schritt 2 (600ms): Vorhänge öffnen sich
+    setTimeout(() => intro.classList.add('open'), 600);
+
+    // Schritt 3 (900ms): Ladebalken startet
+    let pct = 0;
+    const iv = setTimeout(() => {
+      const bar = setInterval(() => {
+        pct += Math.random() * 9 + 5;
+        if (pct >= 100) {
+          pct = 100;
+          if (fill) fill.style.width = '100%';
+          clearInterval(bar);
+          clearTimeout(safetyTimer);
+          // Schritt 4: kurze Pause dann fadeout
+          setTimeout(hideIntro, 350);
+          return;
+        }
+        if (fill) fill.style.width = pct + '%';
+      }, 55);
+    }, 900);
+
+    // Klick überspringt sofort
+    intro.addEventListener('click', (e) => {
+      if (e.target.closest('#intro-sound')) return; // Soundbutton nicht triggern
+      clearTimeout(safetyTimer);
+      clearTimeout(iv);
+      if (fill) fill.style.width = '100%';
+      setTimeout(hideIntro, 150);
     });
+
+    // ── Ambient Audio (optional) ──
+    let audioCtx = null;
+    let audioNodes = [];
+    let soundOn = false;
+
+    window.toggleIntroSound = function(btn) {
+      soundOn = !soundOn;
+      btn.classList.toggle('active', soundOn);
+      const waves = document.getElementById('sound-waves');
+
+      if (soundOn) {
+        // Web Audio API — erzeugt synthetisches Kino-Rauschen
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          // Low rumble (Projektor-Brummen)
+          const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.015;
+          const src = audioCtx.createBufferSource();
+          src.buffer = buf; src.loop = true;
+          const lpf = audioCtx.createBiquadFilter();
+          lpf.type = 'lowpass'; lpf.frequency.value = 120;
+          const gain = audioCtx.createGain();
+          gain.gain.value = 0.4;
+          src.connect(lpf); lpf.connect(gain); gain.connect(audioCtx.destination);
+          src.start();
+          audioNodes = [src, lpf, gain];
+        } catch(e) { console.info('Audio not available'); }
+        if (waves) waves.style.display = '';
+      } else {
+        stopIntroAudio();
+        if (waves) waves.style.display = 'none';
+      }
+    };
+
+    function stopIntroAudio() {
+      if (audioCtx) {
+        try { audioNodes.forEach(n => { try { n.disconnect(); } catch(e){} }); audioCtx.close(); } catch(e){}
+        audioCtx = null; audioNodes = []; soundOn = false;
+        const btn = document.getElementById('intro-sound');
+        if (btn) btn.classList.remove('active');
+      }
+    }
+    window.stopIntroAudio = stopIntroAudio;
   })();
 
   // ── COOKIE BANNER ──
